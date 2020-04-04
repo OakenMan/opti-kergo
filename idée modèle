@@ -1,0 +1,43 @@
+exemple modèle :
+
+hotels = [
+	h0,
+	h1,
+	h2,
+	h3,
+]
+
+poi = [
+	p0,
+	p1,
+	p2,
+	p3,
+	p4,
+	p5,
+	p6
+]
+
+startHotel = h0
+
+endHotel = h3
+
+durations = 
+   h0 h1 h2 h3 p0 p1 p2 p3 p4 p5 p6
+h0 0
+h1    0
+h2       0
+h3          0
+p0             0
+p1               0
+p2                  0
+p3                     0
+p4                        0
+p5                           0
+p6                              0
+
+limitPerDay = [
+	600,
+	800,
+	500,
+	1000,
+	

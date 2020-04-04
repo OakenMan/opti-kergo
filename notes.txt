@@ -1,0 +1,52 @@
+### Données ###
+
+- Un ensemble d'hôtels :
+	> string[] hotels ; représente une liste d'ID ? (genre h0, h1, h2...)
+
+- Un ensemble de POI :
+	> poi[] poids; avec poi = structure du type {string id, int score, int openHour, int closeHour} ?
+	> id = "p0, p1, p2..." 
+	> score = un score compris entre 0 et X ?
+	> openHour et closeHour = temps en minutes depuis 00h00 ? (donc compris entre 0 et 1440)
+
+- Un hôtel de départ :
+	> string startHotel
+	> doit être dans la liste d'hotels
+
+- Un hôtel d'arrivée :
+	> string endHotel
+	> idem que pour le départ
+
+- Durée du voyage en jours :
+	> int nbDays;
+
+- Durée max du trajet par jour (en minutes) :
+	> int[] maxDuration;
+
+- Matrice de durées entre les différents lieux ?
+	> map<string, string, int> ? (je sais même pas si c'est possible)
+	> les 2 premiers strings sont les ID des lieux concernés et l'int la durée entre les deux
+	> on pourrait acceder facilement aux durée : durée entre h0 et p1 = map.get(h0, p1);
+	> le tableau aurait une gueule comme ça ---> cf idée modèle
+
+### Contraintes ###
+
+- Chaque jour, on part d'un hotel et on arrive à un hôtel
+
+- Chaque jour, on ne dépasse pas la durée max de l'itinéraire
+
+- On ne visite jamais 2 fois le même POI
+
+- (On peut passer plusieurs fois par la même hotel)
+
+### Fonction objectif ###
+
+- FO = Somme(Score de tous les POI visités)
+
+### Codage de la solution ###
+
+- Idée 1 un peu bof :
+
+	> string[] = (h0) p1 p3 p2 h1 p4 p7 h2 p0 p6 p5 (h2)
+
+
