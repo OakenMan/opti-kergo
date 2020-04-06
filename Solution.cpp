@@ -3,20 +3,20 @@
 #include <set>
 
 Solution::Solution()
-{ 
+{
     i_valeur_fonction_objectif=0;
 }
 Solution::~Solution()
 {
-    
+
 }
 
 bool Solution::Verification_Solution(Instance *instance)
 {
     bool b_solution_ok=true;
-    int i,j,i_score;
+    unsigned int i,j,i_score;
     float f_date;
-    set<int> set_POIs_Visites;
+    set<unsigned int> set_POIs_Visites;
     i_score=0;
     //Vérification des Ids Hôtel et la taille du tableau associé
     if(v_Id_Hotel_Intermedaire.size()!=(instance->get_Nombre_Jour()-1))
@@ -136,7 +136,7 @@ bool Solution::Verification_Solution(Instance *instance)
                 i_ID_depart=instance->get_Id_Hotel_depart();
                 i_ID_Arrivee=instance->get_Id_Hotel_Arrivee();
             }
-            
+
             f_date=f_date+instance->get_distance_Hotel_Hotel(i_ID_depart, i_ID_Arrivee);
             if((f_date-v_Date_Depart[i])>instance->get_POI_Duree_Max_Voyage(i))
             {

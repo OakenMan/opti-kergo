@@ -1,11 +1,11 @@
 CC=g++
-CFLAGS=-Wall -O
+CFLAGS=-Wall -O -Wno-deprecated
 LDFLAGS=
 EXEC=exec
 
 all: $(EXEC)
 
-exec: main.o
+exec: main.o Instance.o Solution.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 Instance.o: Instance.cpp
@@ -14,7 +14,7 @@ Instance.o: Instance.cpp
 Solution.o : Solution.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o: main.c 
+main.o: main.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
@@ -22,3 +22,7 @@ clean:
 
 mrproper: clean
 	rm -f $(EXEC)
+
+valgrind:
+	gcc -g -o main main.cpp
+	valgrind ./main -f -leak-check=full

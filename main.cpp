@@ -12,7 +12,7 @@
 using namespace std;
 
 int Resolution(Instance * instance);
- 
+
 int main(int argc, const char * argv[])
 {
     try
@@ -22,9 +22,9 @@ int main(int argc, const char * argv[])
         s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);		// s_chemin = ".../opti-kergo/Data/data.txt"
 
         ifstream fichier(s_chemin.c_str(), std::ios::in);		// fichier = fichier data.txt
-		
+
 		std::ofstream fichier_Sortie_Resume;					// ???
-		
+
         s_chemin=CHEMIN_DOSSIER_DONNEES;						// s_chemin = ".../opti-kergo/"
         s_chemin.append(NOM_FICHIER_LISTE_SORTIE);				//s_chemin = ".../opti-kergo/sortie.txt"
         ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);	// fichier_Sortie = sortie.txt
@@ -34,23 +34,23 @@ int main(int argc, const char * argv[])
             if(fichier_Sortie)
             {
                 fichier_Sortie<<"Fichier données\t\tTps de résolution \tBest solution"<<endl;
-				
+
                 getline(fichier,s_tmp);		// on récupère une ligne du fichier dans s_tmp
-				
+
                 while(s_tmp!="")
                 {
                     Instance * instance = new Instance();
-					
+
 					// création des timers
                     chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
                     chrono::duration<double> elapsed;
-					
+
                     int i_best_solution_score=0;
-					
+
                     s_chemin=CHEMIN_DOSSIER_DONNEES;
-					
+
                     cout<< "Résolution de "<<s_tmp<<endl;
-					
+
                     s_chemin.append(s_tmp);
                     s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\r'), s_chemin.end());
                     s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\n'), s_chemin.end());
@@ -66,10 +66,10 @@ int main(int argc, const char * argv[])
                     cout<< "Fin de résolution de "<<s_tmp<<endl;
 
                     elapsed=chrono_end-chrono_start;
-					
+
 					// écriture sur le fichier de sortie
                     fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
-					
+
                     s_tmp="";
                     getline(fichier,s_tmp);		// on relie une ligne et on recommence
                     delete instance;
@@ -98,9 +98,9 @@ int main(int argc, const char * argv[])
 
 int Resolution(Instance * instance)
 {
-    int i_val_Retour_Fct_obj=0;
+    unsigned int i_val_Retour_Fct_obj=0;
     Solution * uneSolution = new Solution();
-    vector<int> v_i_tmp ;
+    vector<unsigned int> v_i_tmp ;
 
 /*INITIALISATION D'UN SOLUTION EN DUR*/
     v_i_tmp.clear();

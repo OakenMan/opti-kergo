@@ -4,17 +4,16 @@
 #include <sstream>
 #include "math.h"
 
-
 #define LECTURE_INT_MAX 100000
 
 bool Instance::chargement_Instance(string s_chemin) throw(string)
 {
-    int i_tmp, i_cpt_ligne,i,j;
+    unsigned int i_tmp, i_cpt_ligne,i,j;
     float f_tmp;
     string s_tmp;
     istringstream is_tmp;
     vector<string> v_s_tmp;
-    
+
     i_Nombre_Hotel=0;
     i_Nombre_POI=0;
     i_Nombre_Jour=0;
@@ -24,24 +23,27 @@ bool Instance::chargement_Instance(string s_chemin) throw(string)
     v_POI.clear();
     v_Hotel.clear();
     v_v_f_distances.clear();
-    
+
     ifstream fichier(s_chemin.c_str(), std::ios::in);
-    
+
     if(fichier)
     {
         fichier >> i_tmp >> i_Nombre_Hotel >> i_Nombre_Jour ;
         i_cpt_ligne=1;
-    if((i_tmp<0)||(i_tmp>LECTURE_INT_MAX)||(i_Nombre_Hotel<0)||(i_Nombre_Hotel>LECTURE_INT_MAX)||(i_Nombre_Jour<0)||(i_Nombre_Jour>LECTURE_INT_MAX))
+
+        if((i_tmp<0)||(i_tmp>LECTURE_INT_MAX)||(i_Nombre_Hotel<0)||(i_Nombre_Hotel>LECTURE_INT_MAX)||(i_Nombre_Jour<0)||(i_Nombre_Jour>LECTURE_INT_MAX))
         {
             cout<<" Erreur lecture des données : ligne "<<  i_cpt_ligne <<". \n";
             return false;
         }
+        
         i_Nombre_POI = i_tmp -1;
         i_Nombre_Hotel=i_Nombre_Hotel+2;
-        
+
         getline(fichier, s_tmp);
         getline(fichier, s_tmp);
         getline(fichier, s_tmp);
+
         i_cpt_ligne=i_cpt_ligne+2;
         is_tmp.clear();
         is_tmp.str(s_tmp);
@@ -115,7 +117,7 @@ bool Instance::chargement_Instance(string s_chemin) throw(string)
         }
         i_Id_Hotel_Depart=0;
         i_Id_Hotel_Arrivee=1;
-        
+
         for(i=0;i<i_Nombre_Hotel;i++)
         {
             vector<float> v_f_tmp;
@@ -129,7 +131,7 @@ bool Instance::chargement_Instance(string s_chemin) throw(string)
             }
             v_v_f_distances.push_back(v_f_tmp);
         }
-        
+
         for(i=0;i<i_Nombre_POI;i++)
         {
             vector<float> v_f_tmp;
@@ -167,23 +169,28 @@ Instance::~Instance()
 {
     //RAS
 }
+
 string Instance::get_chemin(void)
 {
     return s_chemin;
 }
-int Instance::get_Nombre_Hotel(void)
+
+unsigned int Instance::get_Nombre_Hotel(void)
 {
     return i_Nombre_Hotel;
 }
-int Instance::get_Nombre_POI(void)
+
+unsigned int Instance::get_Nombre_POI(void)
 {
     return i_Nombre_POI;
 }
-int Instance::get_Nombre_Jour(void)
+
+unsigned int Instance::get_Nombre_Jour(void)
 {
     return i_Nombre_Jour;
 }
-float Instance::get_POI_Duree_Max_Voyage(int i_Id_jour) throw(string)
+
+float Instance::get_POI_Duree_Max_Voyage(unsigned int i_Id_jour) throw(string)
 {
     if(v_f_Duree_Max_Voyage_Par_Jour.size()==0)
         return 0.0;
@@ -195,7 +202,8 @@ float Instance::get_POI_Duree_Max_Voyage(int i_Id_jour) throw(string)
         throw string(err);
     }
 }
-float Instance::get_POI_Coord_X(int i_Id_POI) throw(string)
+
+float Instance::get_POI_Coord_X(unsigned int i_Id_POI) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -207,7 +215,8 @@ float Instance::get_POI_Coord_X(int i_Id_POI) throw(string)
         throw string(err);
     }
 }
-float Instance::get_POI_Coord_Y(int i_Id_POI) throw(string)
+
+float Instance::get_POI_Coord_Y(unsigned int i_Id_POI) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -219,7 +228,8 @@ float Instance::get_POI_Coord_Y(int i_Id_POI) throw(string)
         throw string(err);
     }
 }
-int Instance::get_POI_Score(int i_Id_POI) throw(string)
+
+unsigned int Instance::get_POI_Score(unsigned int i_Id_POI) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -231,7 +241,8 @@ int Instance::get_POI_Score(int i_Id_POI) throw(string)
         throw string(err);
     }
 }
-float Instance::get_POI_Heure_ouverture(int i_Id_POI) throw(string)
+
+float Instance::get_POI_Heure_ouverture(unsigned int i_Id_POI) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -243,7 +254,8 @@ float Instance::get_POI_Heure_ouverture(int i_Id_POI) throw(string)
         throw string(err);
     }
 }
-float Instance::get_POI_Heure_fermeture(int i_Id_POI) throw(string)
+
+float Instance::get_POI_Heure_fermeture(unsigned int i_Id_POI) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -255,15 +267,18 @@ float Instance::get_POI_Heure_fermeture(int i_Id_POI) throw(string)
         throw string(err);
     }
 }
-int Instance::get_Id_Hotel_depart(void)
+
+unsigned int Instance::get_Id_Hotel_depart(void)
 {
     return i_Id_Hotel_Depart;
 }
-int Instance::get_Id_Hotel_Arrivee(void)
+
+unsigned int Instance::get_Id_Hotel_Arrivee(void)
 {
     return i_Id_Hotel_Arrivee;
 }
-float Instance::get_Hotel_Coord_X(int i_Id_Hotel) throw(string)
+
+float Instance::get_Hotel_Coord_X(unsigned int i_Id_Hotel) throw(string)
 {
     if(v_Hotel.size()==0)
         return 0.0;
@@ -275,7 +290,8 @@ float Instance::get_Hotel_Coord_X(int i_Id_Hotel) throw(string)
         throw string(err);
     }
 }
-float Instance::get_Hotel_Coord_Y(int i_Id_Hotel) throw(string)
+
+float Instance::get_Hotel_Coord_Y(unsigned int i_Id_Hotel) throw(string)
 {
     if(v_Hotel.size()==0)
         return 0.0;
@@ -287,7 +303,8 @@ float Instance::get_Hotel_Coord_Y(int i_Id_Hotel) throw(string)
         throw string(err);
     }
 }
-float Instance::get_distance_Hotel_POI(int i_Id_Hotel ,int i_Id_POI) throw(string)
+
+float Instance::get_distance_Hotel_POI(unsigned int i_Id_Hotel , unsigned int i_Id_POI) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -299,7 +316,8 @@ float Instance::get_distance_Hotel_POI(int i_Id_Hotel ,int i_Id_POI) throw(strin
         throw string(err);
     }
 }
-float Instance::get_distance_POI_POI(int i_Id_POI1 ,int i_Id_POI2) throw(string)
+
+float Instance::get_distance_POI_POI(unsigned int i_Id_POI1 , unsigned int i_Id_POI2) throw(string)
 {
     if(v_POI.size()==0)
         return 0.0;
@@ -312,7 +330,7 @@ float Instance::get_distance_POI_POI(int i_Id_POI1 ,int i_Id_POI2) throw(string)
     }
 }
 
-float Instance::get_distance_Hotel_Hotel(int i_Id_Hotel1,int i_Id_Hotel2) throw(string)
+float Instance::get_distance_Hotel_Hotel(unsigned int i_Id_Hotel1, unsigned int i_Id_Hotel2) throw(string)
 {
     if(v_Hotel.size()==0)
         return 0.0;
