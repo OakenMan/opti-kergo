@@ -1,0 +1,2 @@
+Fichier données		Tps de résolution 	Best solution
+Inst1.txt			5.4332e-05			816

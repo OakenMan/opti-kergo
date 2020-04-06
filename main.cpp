@@ -1,10 +1,11 @@
-#define CHEMIN_DOSSIER_DONNEES "/Users/kergosien/Desktop/Cours Optim Discret/Conception itineraire Touristique/Format Etudiant Public/"
+#define CHEMIN_DOSSIER_DONNEES "/home/tom/Documents/DI4/S8/opti-kergo/Data/"
 #define NOM_FICHIER_LISTE_FICHIER_DONNEES "data.txt"
 #define NOM_FICHIER_LISTE_SORTIE "sortie.txt"
 
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <algorithm>
 #include "Instance.hpp"
 #include "Solution.hpp"
 
@@ -12,47 +13,65 @@ using namespace std;
 
 int Resolution(Instance * instance);
  
-
 int main(int argc, const char * argv[])
-{ 
+{
     try
     {
         string s_tmp;
-        string s_chemin=CHEMIN_DOSSIER_DONNEES;
-        s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);
-        
-        ifstream fichier(s_chemin.c_str(), std::ios::in);std::ofstream fichier_Sortie_Resume;
-        s_chemin=CHEMIN_DOSSIER_DONNEES;
-        s_chemin.append(NOM_FICHIER_LISTE_SORTIE);
-        ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);
+        string s_chemin=CHEMIN_DOSSIER_DONNEES;					// s_chemin = ".../opti-kergo/Data/"
+        s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);		// s_chemin = ".../opti-kergo/Data/data.txt"
+
+        ifstream fichier(s_chemin.c_str(), std::ios::in);		// fichier = fichier data.txt
+		
+		std::ofstream fichier_Sortie_Resume;					// ???
+		
+        s_chemin=CHEMIN_DOSSIER_DONNEES;						// s_chemin = ".../opti-kergo/"
+        s_chemin.append(NOM_FICHIER_LISTE_SORTIE);				//s_chemin = ".../opti-kergo/sortie.txt"
+        ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);	// fichier_Sortie = sortie.txt
 
         if(fichier)
         {
             if(fichier_Sortie)
             {
-                fichier_Sortie<<" Fichier données\t Tps de résolution \t Best solution"<<endl;
-                getline(fichier,s_tmp);
+                fichier_Sortie<<"Fichier données\t\tTps de résolution \tBest solution"<<endl;
+				
+                getline(fichier,s_tmp);		// on récupère une ligne du fichier dans s_tmp
+				
                 while(s_tmp!="")
                 {
                     Instance * instance = new Instance();
+					
+					// création des timers
                     chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
                     chrono::duration<double> elapsed;
+					
                     int i_best_solution_score=0;
+					
                     s_chemin=CHEMIN_DOSSIER_DONNEES;
-                    cout<< " Résolution de "<<s_tmp<<endl;
+					
+                    cout<< "Résolution de "<<s_tmp<<endl;
+					
                     s_chemin.append(s_tmp);
                     s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\r'), s_chemin.end());
                     s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\n'), s_chemin.end());
-                    
-                    instance->chargement_Instance(s_chemin);
+
+                    instance->chargement_Instance(s_chemin);	// on charge l'instance du fichier pointé par s_tmp
+
                     chrono_start = chrono::system_clock::now();
-                    i_best_solution_score=Resolution(instance);
-                    cout<< " Fin de résolution de "<<s_tmp<<endl;
+
+                    i_best_solution_score=Resolution(instance);		// RÉSOLUTION DE L'INSTANCE
+
                     chrono_end = chrono::system_clock::now();
+
+                    cout<< "Fin de résolution de "<<s_tmp<<endl;
+
                     elapsed=chrono_end-chrono_start;
-                    fichier_Sortie<<s_chemin <<"\t"<<elapsed.count()<<"\t"<< i_best_solution_score <<endl;
+					
+					// écriture sur le fichier de sortie
+                    fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
+					
                     s_tmp="";
-                    getline(fichier,s_tmp);
+                    getline(fichier,s_tmp);		// on relie une ligne et on recommence
                     delete instance;
                 }
                 fichier_Sortie.close();
@@ -68,7 +87,7 @@ int main(int argc, const char * argv[])
             cout<<" Erreur lecture des données : chemin listant l'ensemble des données non valide. "<<endl;
         }
     }
-    
+
     catch(string err)
     {
         cout << "Erreur fatale : " <<endl;
@@ -94,11 +113,10 @@ int Resolution(Instance * instance)
     uneSolution->v_v_Sequence_Id_Par_Jour.push_back(v_i_tmp);
     uneSolution->i_valeur_fonction_objectif=816;
 /* */
-    
+
     uneSolution->Verification_Solution(instance);
-    
+
     i_val_Retour_Fct_obj=uneSolution->i_valeur_fonction_objectif;
     delete uneSolution;
     return i_val_Retour_Fct_obj;
 }
-
