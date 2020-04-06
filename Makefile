@@ -1,8 +1,24 @@
-.PHONY: clean All
+CC=g++
+CFLAGS=-Wall -O
+LDFLAGS=
+EXEC=exec
 
-All:
-	@echo "----------Building project:[ opti-kergo - Debug ]----------"
-	@"$(MAKE)" -f  "opti-kergo.mk"
+all: $(EXEC)
+
+exec: main.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+Instance.o: Instance.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+Solution.o : Solution.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+main.o: main.c 
+	$(CC) -o $@ -c $< $(CFLAGS)
+
 clean:
-	@echo "----------Cleaning project:[ opti-kergo - Debug ]----------"
-	@"$(MAKE)" -f  "opti-kergo.mk" clean
+	rm -f *.o core
+
+mrproper: clean
+	rm -f $(EXEC)
