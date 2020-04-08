@@ -49,4 +49,47 @@
 
 	> string[] = (h0) p1 p3 p2 h1 p4 p7 h2 p0 p6 p5 (h2)
 
+### ALGO GENETIQUE & MODELE ###
 
+Score/Evaluation:
+	Forte pénalités pour les solution irréalisables -> réécriture de la fonction de score, 2 composantes : le score du trajet
+		et un score de faisabilité (0 pour faisable, infini pour très irréalisable), permet une séléction plus "affine" en fonction de différents paramètres
+
+Génération aléatoire :
+	On accepte les solutions irréalisables
+	Hotels intermédiaires : 100% pif 
+	POIs/jour : au pif pif tant que la durée total du trajet n'a pas dépasse durée max du jour/2
+	Date de départ : au pif entre 0 et durée max d'une journée - durée max trajet du jour
+
+	Pour la suite :
+	Se resteindre à un espace de solutions irréalisables
+
+Croisement:
+	Hotels : Croisement de séquence idiot
+	POIs : opérateur de croisement : PMX, on travaille juste sur un seul jour
+	Date départ : croisement de séquence idiot
+
+Mutation:
+	2 mutations nécessaires : On ajoute et enlève aléatoirement 2 POIs
+	Echange de 2 POIs entre eux
+
+-Population de base générée aléatoirement
+	n chaînes de caractères ou de bits.
+	1 caractère correspond à 1 gène
+-Évaluation
+	à chaque chaîne, une note correspondant à son adaptation au problème.
+-Sélection
+	tirage au sort de n/2 couples de chaînes sur une roue biaisée.
+	Chaque chaîne a une probabilité d’être tirée proportionnelle à son adaptation au problème.
+	Optimisation possible : si l’individu le plus adapté n’a pas été sélectionné, il est copié d’office dans la génération intermédiaire à la place d’un individu choisi aléatoirement.
+-Croisement et mutation
+	Chaque couple donne 2 chaînes filles.
+	-Enjambement. Probabilité : 70 %. Emplacement de l'enjambement choisi aléatoirement.
+		Exemple :
+		Chaînes parents : A : 00110100 ; B : 01010010
+		Chaînes filles : A’ : 00010010 ; B’ : 01110100
+		Croisement en 2 points plus efficace.
+	-Mutations des chaînes filles. Probabilité : de 0,1 à 1 %.
+		Inversion d’un bit au hasard ou remplacement au hasard d’un caractère par un autre.
+		Probabilité fixe ou évolutive (auto-adaptation).
+		On peut prendre probabilité = 1/nombre de bits.
