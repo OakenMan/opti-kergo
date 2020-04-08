@@ -1,4 +1,4 @@
-#define CHEMIN_DOSSIER_DONNEES "C:/Users/Olivier/Desktop/Polytech/S8/opti-kergo/Data/"
+#define CHEMIN_DOSSIER_DONNEES "Data/"
 #define NOM_FICHIER_LISTE_FICHIER_DONNEES "data.txt"
 #define NOM_FICHIER_LISTE_SORTIE "sortie.txt"
 
@@ -55,24 +55,27 @@ int main(int argc, const char * argv[])
                     s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\r'), s_chemin.end());
                     s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\n'), s_chemin.end());
 
-                    instance->chargement_Instance(s_chemin);	// on charge l'instance du fichier pointé par s_tmp
+                    if(instance->chargement_Instance(s_chemin)) {	// on charge l'instance du fichier pointé par s_tmp
+                      chrono_start = chrono::system_clock::now();
 
-                    chrono_start = chrono::system_clock::now();
+                      i_best_solution_score=Resolution(instance);		// RÉSOLUTION DE L'INSTANCE
 
-                    i_best_solution_score=Resolution(instance);		// RÉSOLUTION DE L'INSTANCE
+                      chrono_end = chrono::system_clock::now();
 
-                    chrono_end = chrono::system_clock::now();
+                      cout<< "Fin de résolution de "<<s_tmp<<endl;
 
-                    cout<< "Fin de résolution de "<<s_tmp<<endl;
+                      elapsed=chrono_end-chrono_start;
 
-                    elapsed=chrono_end-chrono_start;
+                      // écriture sur le fichier de sortie
+                      fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
 
-					// écriture sur le fichier de sortie
-                    fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
-
-                    s_tmp="";
-                    getline(fichier,s_tmp);		// on relie une ligne et on recommence
-                    delete instance;
+                      s_tmp="";
+                      getline(fichier,s_tmp);		// on relie une ligne et on recommence
+                      delete instance;
+                    }
+                    else {
+                       cout<<"Erreur impossible "<<endl;
+                    }
                 }
                 fichier_Sortie.close();
             }
