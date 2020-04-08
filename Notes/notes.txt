@@ -71,6 +71,9 @@ Croisement:
 
 Mutation:
 	2 mutations nécessaires : On ajoute et enlève aléatoirement 2 POIs
+	Mutations hotel : échange avec tout les autres hotels possibles
+	Mutations date : on change la date 
+	
 	Echange de 2 POIs entre eux
 
 -Population de base générée aléatoirement

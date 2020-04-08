@@ -1,6 +1,0 @@
-Fichier données		Tps de résolution 	Best solution
-Inst1.txt			1.5679e-05			816
-Fichier données		Tps de résolution 	Best solution
-Inst1.txt			0			816
-Fichier données		Tps de résolution 	Best solution
-Inst1.txt			0			816

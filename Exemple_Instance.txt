@@ -1,7 +1,7 @@
 Nbr POIs+1      Nbr Hotels-2    Nbr Jours
 64              1               2
 
-???
+Durée max d'une journée
 45
 
 Durée max de voyage par jour

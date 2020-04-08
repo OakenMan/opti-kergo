@@ -36,7 +36,7 @@ bool Instance::chargement_Instance(string s_chemin) throw(string)
             cout<<" Erreur lecture des données : ligne "<<  i_cpt_ligne <<". \n";
             return false;
         }
-        
+
         i_Nombre_POI = i_tmp -1;
         i_Nombre_Hotel=i_Nombre_Hotel+2;
 
@@ -45,6 +45,7 @@ bool Instance::chargement_Instance(string s_chemin) throw(string)
         getline(fichier, s_tmp);
 
         i_cpt_ligne=i_cpt_ligne+2;
+        
         is_tmp.clear();
         is_tmp.str(s_tmp);
         while(getline(is_tmp,s_tmp,' '))

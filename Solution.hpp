@@ -13,6 +13,7 @@ class Solution
         vector<unsigned int> v_Id_Hotel_Intermedaire;            // Donne l'Id des hôtels entre deux jours (ne considère pas l'hôtel départ et d'arrivé). La taille du tableau est égale au nombre de jours - 1.
         vector<vector<unsigned int>> v_v_Sequence_Id_Par_Jour;   // Donne la séquence d'Id des POIs visités par jour (v_v_Sequence_Id_Par_Jour[d] : séquence de d'Id des POIs visités le jour d). La taille de la première dimension du tableau est égale au nombre de jours.
         vector<float> v_Date_Depart;                    // Donne la date/heure de départ de l'hôtel de chaque jour. La taille du tableau est égale au nombre de jours.
+
         unsigned int i_valeur_fonction_objectif;                 // Valeur de la fonction objectif (somme des scores des POIs visités
 
     public:
