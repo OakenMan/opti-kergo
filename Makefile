@@ -23,6 +23,6 @@ clean:
 mrproper: clean
 	rm -f $(EXEC)
 
-valgrind:
-	gcc -g -o main main.cpp
-	valgrind ./main -f -leak-check=full
+valgrind: main.o Instance.o Solution.o
+	$(CC) -g -o $@ $^ $(LDFLAGS)
+	valgrind ./exec -f -leak-check=full

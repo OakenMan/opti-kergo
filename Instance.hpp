@@ -10,7 +10,7 @@ using namespace std;
 class Instance
 {
     private:
-        string s_chemin;            //Chemin du fichier de données
+        string s_chemin;                     //Chemin du fichier de données
         unsigned int i_Nombre_Hotel;         //Nombre d'hotêls numéroté (id) de 0 à i_Nombre_Hotel-1
         unsigned int i_Nombre_POI;           //Nombre de POIs numéroté (id) de 0 à i_Nombre_POI-1
         unsigned int i_Nombre_Jour;          //Nombre de jours numéroté (id) de 0 à i_Nombre_Jour-1
