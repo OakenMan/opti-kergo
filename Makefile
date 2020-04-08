@@ -14,7 +14,7 @@ Instance.o: Instance.cpp
 Solution.o : Solution.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o: main.cpp
+main.o: main.cpp Instance.hpp Solution.hpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:

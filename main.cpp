@@ -1,4 +1,4 @@
-#define CHEMIN_DOSSIER_DONNEES "/home/tom/Documents/DI4/S8/opti-kergo/Data/"
+#define CHEMIN_DOSSIER_DONNEES "C:/Users/Olivier/Desktop/Polytech/S8/opti-kergo/Data/"
 #define NOM_FICHIER_LISTE_FICHIER_DONNEES "data.txt"
 #define NOM_FICHIER_LISTE_SORTIE "sortie.txt"
 
