@@ -3,7 +3,7 @@
 
 #include "Instance.hpp"
 #include <stdio.h>
-#include <vector>       
+#include <vector>
 
 using namespace std;
 
@@ -22,6 +22,8 @@ class Solution
         virtual ~Solution();
 
     bool Verification_Solution(Instance *instance);
+
+    void print();
 };
 
 #endif

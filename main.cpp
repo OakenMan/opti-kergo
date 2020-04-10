@@ -119,6 +119,8 @@ int Resolution(Instance * instance)
 
     uneSolution->Verification_Solution(instance);
 
+    uneSolution->print();
+
     i_val_Retour_Fct_obj=uneSolution->i_valeur_fonction_objectif;
     delete uneSolution;
     return i_val_Retour_Fct_obj;
