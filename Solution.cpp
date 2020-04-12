@@ -154,3 +154,28 @@ bool Solution::Verification_Solution(Instance *instance)
 
     return b_solution_ok;
 }
+
+void display(vector<unsigned int> &v) {
+   for(unsigned int i=0; i<v.size(); i++) {
+      cout << v[i] << " ";
+   }
+}
+
+void display(vector<float> &v) {
+   for(unsigned int i=0; i<v.size(); i++) {
+      cout << v[i] << " ";
+   }
+}
+
+void Solution::print() {
+   cout << "Hôtels intermédiaires : ";
+   display(v_Id_Hotel_Intermedaire);
+   cout << "\nSéquences de POI par jour :";
+   for(unsigned int i=0; i<v_v_Sequence_Id_Par_Jour.size(); i++) {
+      cout << "\n" << i << " : ";
+      display(v_v_Sequence_Id_Par_Jour[i]);
+   }
+   cout << "\nHeure de départ chaque jour :";
+   display(v_Date_Depart);
+   cout << "\nSCORE = " << i_valeur_fonction_objectif << endl;
+}

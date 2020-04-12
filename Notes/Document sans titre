@@ -1,0 +1,29 @@
+
+Generation() : Solution[]
+
+Selection(Solution[]) : Solution[]
+> Prend toutes les solutions en entrée, renvoie un nombre de solutions à reproduire entre elles
+
+Reproduction(Solution[]) : Solution[]
+> On donne l'ensemble de solutions à reproduire en entrée, on renvoie un ensemble de solutions (enfants) en sortie
+
+Mutation(Solution[]) : Solution[]
+
+--------------------------
+P = Generation()
+Tant Que(...)
+	S = Selection(P)
+	R = Reproduction(S)
+	R = Mutation(M)
+	P = S + R
+--------------------------
+
+Reproduction :
+
+S1, S2 = Choix_au_hasard(S)
+
+	
+
+
+
+
