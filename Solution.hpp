@@ -15,6 +15,7 @@ class Solution
         vector<float> v_Date_Depart;                    // Donne la date/heure de départ de l'hôtel de chaque jour. La taille du tableau est égale au nombre de jours.
 
         unsigned int i_valeur_fonction_objectif;                 // Valeur de la fonction objectif (somme des scores des POIs visités
+        unsigned int i_valeur_score_infaisabilite;
 
     public:
     /* Constructeurs et destructeur  */
