@@ -6,33 +6,6 @@
 #include <limits.h>
 #include <thread>
 
-
-
-vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, unsigned int maxValue) {
-   vector<unsigned int> v;
-
-   unsigned int size = minSize + rand() % (maxSize - minSize + 1);
-
-   for(unsigned int i=0; i<size; i++) {
-      unsigned int r = rand() % (maxValue + 1);
-      if(contains(v, r)) {
-         i--;
-      }
-      else {
-         v.push_back(r);
-      }
-   }
-
-   return v;
-}
-
-/*
-   Croisement:
-	Hotels : Croisement de séquence idiot
-	POIs : opérateur de croisement : PMX, on travaille juste sur un seul jour
-	Date départ : croisement de séquence idiot
-*/
-
 int main(int argc, const char * argv[]){
 
    srand(time(NULL));
@@ -46,12 +19,11 @@ int main(int argc, const char * argv[]){
    }
 
    // Génération de la population de base
-   vector<Solution> population;
+   vector<Solution*> population;
 
    for(unsigned int i=0; i<1000; i++){
       Solution * p1 = generateSolution(instance);
-      population.push_back(*p1);
-      delete p1;
+      population.push_back(p1);
    }
 
    // for(unsigned int i=0; i<population.size(); i++) {
@@ -61,7 +33,7 @@ int main(int argc, const char * argv[]){
    chrono_start = chrono::system_clock::now();
 
    // Reproduction de la population
-   vector<Solution> children;
+   vector<Solution*> children;
 
    children = reproduction(population);
 
@@ -261,20 +233,6 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
 
 }
 
-
-vector<unsigned int> linkVectors(vector<vector<unsigned int>> v) {
-
-   vector<unsigned int> linked;
-   for(unsigned int i=0; i<v.size(); i++) {
-      for(unsigned int j=0; j<v[i].size(); j++) {
-         linked.push_back(v[i][j]);
-      }
-   }
-
-   return linked;
-
-}
-
 vector<vector<unsigned int>> ox1FINAL(vector<vector<unsigned int>> p1, vector<vector<unsigned int>> p2) {
 
    // On fusione tous les vecteurs (=séquences de POI) en un seul vector
@@ -354,18 +312,18 @@ vector<float> shuffle_float(vector<float> p1, vector<float> p2) {
 /*
  * Créé une nouvelle solution (enfant) à partir de deux autres solutions (parents)
  */
-Solution * faireUnBebe(Solution &papa, Solution &maman) {
+Solution * faireUnBebe(Solution *papa, Solution *maman) {
 
    Solution * child = new Solution();
 
    // On mélange la liste des hôtels intermédiaires
-   child->v_Id_Hotel_Intermedaire = shuffle_int(papa.v_Id_Hotel_Intermedaire, maman.v_Id_Hotel_Intermedaire);
+   child->v_Id_Hotel_Intermedaire = shuffle_int(papa->v_Id_Hotel_Intermedaire, maman->v_Id_Hotel_Intermedaire);
 
    // On mélange les séquances de POI
-   child->v_v_Sequence_Id_Par_Jour = ox1FINAL(papa.v_v_Sequence_Id_Par_Jour, maman.v_v_Sequence_Id_Par_Jour);
+   child->v_v_Sequence_Id_Par_Jour = ox1FINAL(papa->v_v_Sequence_Id_Par_Jour, maman->v_v_Sequence_Id_Par_Jour);
 
    // On mélange des heures de départ
-   child->v_Date_Depart = shuffle_float(papa.v_Date_Depart, maman.v_Date_Depart);
+   child->v_Date_Depart = shuffle_float(papa->v_Date_Depart, maman->v_Date_Depart);
 
    return child;
 }
@@ -375,14 +333,14 @@ Solution * faireUnBebe(Solution &papa, Solution &maman) {
  * [!] La taille de la population doit être PAIRE
  * O(p*n) avec p = taille de la population et n = nombre de POI visités par solution
  */
-vector<Solution> reproduction(vector<Solution> population) {
-   vector<Solution> children;
+vector<Solution*> reproduction(vector<Solution*> population) {
+   vector<Solution*> children;
 
    for(unsigned int i=0; i<population.size(); i+=2) {
       Solution * child1 = faireUnBebe(population[i], population[i+1]);
-      children.push_back(*child1);
+      children.push_back(child1);
       Solution * child2 = faireUnBebe(population[i+1], population[i]);
-      children.push_back(*child2);
+      children.push_back(child2);
       delete child1;
       delete child2;
    }

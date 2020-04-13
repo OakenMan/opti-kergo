@@ -21,4 +21,14 @@ bool contains(vector<unsigned int> v, unsigned int value);
  */
 unsigned indexOf(vector<unsigned int> v, unsigned int value);
 
+/*
+ * Génère un vecteur aléatoirement, de taille compris entre minSize et maxSize, et de valeurs comprises entre 0 et maxValue
+ */
+vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, unsigned int maxValue);
+
+/*
+ * Fusionne tous les vecteurs d'un vecteur de vecteur, pour ne former qu'un seul vecteur ._.
+ */
+vector<unsigned int> linkVectors(vector<vector<unsigned int>> v);
+
 #endif

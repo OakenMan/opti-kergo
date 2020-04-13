@@ -33,3 +33,40 @@ unsigned int indexOf(vector<unsigned int> v, unsigned int value) {
    }
    return v.size()-1;
 }
+
+/*
+ * Génère un vecteur aléatoirement, de taille compris entre minSize et maxSize, et de valeurs comprises entre 0 et maxValue
+ */
+vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, unsigned int maxValue) {
+   vector<unsigned int> v;
+
+   unsigned int size = minSize + rand() % (maxSize - minSize + 1);
+
+   for(unsigned int i=0; i<size; i++) {
+      unsigned int r = rand() % (maxValue + 1);
+      if(contains(v, r)) {
+         i--;
+      }
+      else {
+         v.push_back(r);
+      }
+   }
+
+   return v;
+}
+
+/*
+ * Fusionne tous les vecteurs d'un vecteur de vecteur, pour ne former qu'un seul vecteur ._.
+ */
+vector<unsigned int> linkVectors(vector<vector<unsigned int>> v) {
+
+   vector<unsigned int> linked;
+   for(unsigned int i=0; i<v.size(); i++) {
+      for(unsigned int j=0; j<v[i].size(); j++) {
+         linked.push_back(v[i][j]);
+      }
+   }
+
+   return linked;
+
+}

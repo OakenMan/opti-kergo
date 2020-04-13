@@ -207,22 +207,30 @@ Solution * generateSolution(Instance *instance) {
 
       vector<unsigned int> poiList;
       unsigned int nbPOIthisDay = 5 + rand() % (instance->get_Nombre_POI() / (instance->get_Nombre_Jour() * 3));    // génère un nombre entre 0 et nbPOI/(nbJours*3)-1
+
       for(unsigned int j=0; j<nbPOIthisDay; j++) {
-         // TODO : faire que y'ai jamais 2 fois le même ID dans toute la séquence
-         unsigned int idPOI = rand() % instance->get_Nombre_POI();      // génère un id entre 0 et nbPoi-1
-         bool found = false;
-         for(unsigned int k=0; k<sol->v_v_Sequence_Id_Par_Jour.size(); k++) {
-            if(contains(sol->v_v_Sequence_Id_Par_Jour[k], idPOI)) {
+         bool success = false;
+         while(!success) {
+            bool found = false;
+            unsigned int newPOI = rand() % instance->get_Nombre_POI();
+
+            // Regarde si newPOI est déjà dans les jours précédents
+            for(unsigned int k=0; k<sol->v_v_Sequence_Id_Par_Jour.size(); k++) {
+               if(contains(sol->v_v_Sequence_Id_Par_Jour[k], newPOI)) {
+                  found = true;
+               }
+            }
+            // Et dans le jour actuel
+            if(contains(poiList, newPOI)) {
                found = true;
             }
-         }
-         if(!found) {
-            poiList.push_back(idPOI);
-         }
-         else {
-            j--;
+            if(!found) {
+               poiList.push_back(newPOI);
+               success = true;
+            }
          }
       }
+
       sol->v_v_Sequence_Id_Par_Jour.push_back(poiList);
    }
 

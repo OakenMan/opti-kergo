@@ -32,11 +32,11 @@ vector<float> shuffle_float(vector<float> p1, vector<float> p2);
 /*
  * Créé une nouvelle solution (enfant) à partir de deux autres solutions (parents)
  */
-Solution * faireUnBebe(Solution &papa, Solution &maman);
+Solution * faireUnBebe(Solution *papa, Solution *maman);
 
 /*
  * Reproduit une population
  */
-vector<Solution> reproduction(vector<Solution> population);
+vector<Solution*> reproduction(vector<Solution*> population);
 
 #endif

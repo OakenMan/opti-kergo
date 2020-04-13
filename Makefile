@@ -32,3 +32,6 @@ valgrind: $(ARG)
 
 repro: reproduction.cpp Solution.cpp Instance.cpp vector_methods.cpp
 	$(CC) -o $@ $^ $(CFLAGS)
+
+muta: mutation.cpp Solution.cpp Instance.cpp vector_methods.cpp
+	$(CC) -o $@ $^ $(CFLAGS)
