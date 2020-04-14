@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <chrono>
 #include <limits.h>
-#include <thread>
 
 int main(int argc, const char * argv[]){
 
@@ -13,22 +12,14 @@ int main(int argc, const char * argv[]){
    chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
    chrono::duration<double> elapsed;
 
+   // Lecture de l'instance
    Instance *instance = new Instance();
    if(!instance->chargement_Instance("Data/Inst8.txt")) {
       cerr << "Impossible de charger l'instance" << endl;
    }
 
    // Génération de la population de base
-   vector<Solution*> population;
-
-   for(unsigned int i=0; i<1000; i++){
-      Solution * p1 = generateSolution(instance);
-      population.push_back(p1);
-   }
-
-   // for(unsigned int i=0; i<population.size(); i++) {
-   //    population[i].print();
-   // }
+   vector<Solution*> population = generation(instance, 100000);
 
    chrono_start = chrono::system_clock::now();
 
@@ -37,11 +28,11 @@ int main(int argc, const char * argv[]){
 
    children = reproduction(population);
 
-   // for(unsigned int i=0; i<children.size(); i++) {
-   //    children[i].print();
-   // }
-
    chrono_end = chrono::system_clock::now();
+
+   // On supprime les populations
+   deletePopulation(population);
+   deletePopulation(children);
 
    elapsed=chrono_end-chrono_start;
 
@@ -52,7 +43,7 @@ int main(int argc, const char * argv[]){
 
 /*
  * Crossover PMX
- * [!] Ne fonctionne pas totalement mais je le garde au cas où
+ * [!] Ne fonctionne pas vraiment mais je le garde au cas où
  */
 vector<unsigned int> pmx(vector<unsigned int> p1, vector<unsigned int> p2) {
 
@@ -154,8 +145,6 @@ vector<unsigned int> pmx(vector<unsigned int> p1, vector<unsigned int> p2) {
  */
 vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
 
-   const unsigned int cst = 100;
-
    vector<unsigned int> child;
 
    unsigned int n1 = p1.size();
@@ -168,14 +157,14 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
    if(n2 < n1) {
       // On rallonge p2
       for(unsigned int i=0; i<n1-n2; i++) {
-         p2.push_back(cst);
+         p2.push_back(UINT_MAX);
       }
    }
    // Si p2 plus grand que p1
    else if(n1 < n2) {
       // On rallonge p1
       for(unsigned int i=0; i<n2-n1; i++) {
-         p1.push_back(cst);
+         p1.push_back(UINT_MAX);
       }
    }
 
@@ -185,7 +174,7 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
 
    // Initialisation des enfants
    for(unsigned int i=0; i<n; i++) {
-      child.push_back(cst);   //### VALGRIND : ici on malloc pas assez de place
+      child.push_back(UINT_MAX);   //### VALGRIND : ici on malloc pas assez de place
    }
 
    // Indices choisis pour la "coupe"
@@ -210,7 +199,7 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
          index += cutLength;
       }
       // Si p2[i] n'as pas été copiée dans l'enfant, on le rajoute à la première place disponible
-      if(!contains(child, p2[i]) || p2[i] == cst) {
+      if(!contains(child, p2[i]) || p2[i] == UINT_MAX) {
          child[index] = p2[i];      //### VALGRIND : ici des fois on écrit trop loin (pourquoi??)
          index++;
       }
@@ -219,9 +208,9 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
    // Et on supprime les 0 en trop dans child
    vector<unsigned int>::iterator it;
    do {
-      it = find(child.begin(), child.end(), cst);
+      it = find(child.begin(), child.end(), UINT_MAX);
       if(it != child.end()) {
-         if(*it == cst) {
+         if(*it == UINT_MAX) {
             child.erase(it);
          }
       }
@@ -233,7 +222,10 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
 
 }
 
-vector<vector<unsigned int>> ox1FINAL(vector<vector<unsigned int>> p1, vector<vector<unsigned int>> p2) {
+/*
+ * Applique un algo. de crossover (actuellement OX1) entre p1 et p2 (tableaux des POI visités chaque jour)
+ */
+vector<vector<unsigned int>> crossover(vector<vector<unsigned int>> p1, vector<vector<unsigned int>> p2) {
 
    // On fusione tous les vecteurs (=séquences de POI) en un seul vector
    vector<unsigned int> p1Linked = linkVectors(p1);
@@ -264,12 +256,12 @@ vector<vector<unsigned int>> ox1FINAL(vector<vector<unsigned int>> p1, vector<ve
 /*
  * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement (possibilité de le générer différement)
  */
-vector<unsigned int> shuffle_int(vector<unsigned int> p1, vector<unsigned int> p2) {
+vector<unsigned int> shuffle_int(vector<unsigned int> *p1, vector<unsigned int> *p2) {
 
    vector<unsigned int> pattern;
    vector<unsigned int> child;
 
-   unsigned int n = p1.size(); // ici, p1 et p2 font forcément la même taille
+   unsigned int n = p1->size(); // ici, p1 et p2 font forcément la même taille
 
    // Génère un pattern composé de 0 et de 1 (adaptable par la suite si le random c'est pas ouf)
    for(unsigned int i=0; i<n; i++) {
@@ -278,8 +270,8 @@ vector<unsigned int> shuffle_int(vector<unsigned int> p1, vector<unsigned int> p
 
    // Pour un index i, si pattern[i] = 1, on garde la valeur de p1, sinon on garde celle de p2
    for(unsigned int i=0; i<n; i++) {
-      if(pattern[i])    child.push_back(p1[i]);
-      else              child.push_back(p2[i]);
+      if(pattern[i])    child.push_back(p1->at(i));
+      else              child.push_back(p2->at(i));
    }
 
    return child;
@@ -288,12 +280,12 @@ vector<unsigned int> shuffle_int(vector<unsigned int> p1, vector<unsigned int> p
 /*
  * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement (possibilité de le générer différement)
  */
-vector<float> shuffle_float(vector<float> p1, vector<float> p2) {
+vector<float> shuffle_float(vector<float> *p1, vector<float> *p2) {
 
    vector<unsigned int> pattern;
    vector<float> child;
 
-   unsigned int n = p1.size(); // ici, p1 et p2 font forcément la même taille
+   unsigned int n = p1->size(); // ici, p1 et p2 font forcément la même taille
 
    // Génère un pattern composé de 0 et de 1
    for(unsigned int i=0; i<n; i++) {
@@ -302,8 +294,8 @@ vector<float> shuffle_float(vector<float> p1, vector<float> p2) {
 
    // Pour un index i, si pattern[i] = 1, on garde la valeur de p1, sinon on garde celle de p2
    for(unsigned int i=0; i<n; i++) {
-      if(pattern[i])    child.push_back(p1[i]);
-      else              child.push_back(p2[i]);
+      if(pattern[i])    child.push_back(p1->at(i));
+      else              child.push_back(p2->at(i));
    }
 
    return child;
@@ -312,18 +304,18 @@ vector<float> shuffle_float(vector<float> p1, vector<float> p2) {
 /*
  * Créé une nouvelle solution (enfant) à partir de deux autres solutions (parents)
  */
-Solution * faireUnBebe(Solution *papa, Solution *maman) {
+Solution * reproduce(Solution *p1, Solution *p2) {
 
    Solution * child = new Solution();
 
    // On mélange la liste des hôtels intermédiaires
-   child->v_Id_Hotel_Intermedaire = shuffle_int(papa->v_Id_Hotel_Intermedaire, maman->v_Id_Hotel_Intermedaire);
+   child->v_Id_Hotel_Intermedaire = shuffle_int(&p1->v_Id_Hotel_Intermedaire, &p2->v_Id_Hotel_Intermedaire);
 
    // On mélange les séquances de POI
-   child->v_v_Sequence_Id_Par_Jour = ox1FINAL(papa->v_v_Sequence_Id_Par_Jour, maman->v_v_Sequence_Id_Par_Jour);
+   child->v_v_Sequence_Id_Par_Jour = crossover(p1->v_v_Sequence_Id_Par_Jour, p2->v_v_Sequence_Id_Par_Jour);
 
    // On mélange des heures de départ
-   child->v_Date_Depart = shuffle_float(papa->v_Date_Depart, maman->v_Date_Depart);
+   child->v_Date_Depart = shuffle_float(&p1->v_Date_Depart, &p2->v_Date_Depart);
 
    return child;
 }
@@ -337,12 +329,8 @@ vector<Solution*> reproduction(vector<Solution*> population) {
    vector<Solution*> children;
 
    for(unsigned int i=0; i<population.size(); i+=2) {
-      Solution * child1 = faireUnBebe(population[i], population[i+1]);
-      children.push_back(child1);
-      Solution * child2 = faireUnBebe(population[i+1], population[i]);
-      children.push_back(child2);
-      delete child1;
-      delete child2;
+      children.push_back(reproduce(population[i], population[i+1]));
+      children.push_back(reproduce(population[i+1], population[i]));
    }
 
    return children;

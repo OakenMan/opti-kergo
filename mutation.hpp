@@ -3,31 +3,43 @@
 
 #include "Instance.hpp"
 #include "Solution.hpp"
+#include "generation.hpp"
 #include "vector_methods.hpp"
 #include <stdio.h>
 #include <vector>
 
 using namespace std;
 
-const float MUTATION_CHANCE = 0.1;
-
-const float MAX_CHANGE_ON_DATE = 5.0;
-
 // Probabilités de mutation, en %
 const float PROBA_MUT_HOTEL = 1;
 const float PROBA_MUT_POI = 5;
 const float PROBA_MUT_DATE = 5;
 
+// Changement max (positif ou négatif) de la date en une mutation
+const float MAX_CHANGE_ON_DATE = 5.0;
+
+/*
+ * Fait muter la liste des hôtels intermédiaires d'une solution
+ * (choisit un jour au hasard, et change l'hôtel par un autre)
+ */
 void muter_Hotels_Intermediares(Solution *solution, unsigned int nbHotels);
 
+/*
+ * Fait muter les séquences de POI d'une solution
+ * (choisit un jour au hasard, et y supprime ou ajoute un POI)
+ */
 void muter_Sequence_POI(Solution *solution, unsigned int nbPOI);
 
+/*
+ * Fait muter le vecteur des dates de départ d'une solutions
+ * (augmente ou diminue aléatoirement la date de départ)
+ */
 void muter_Date_Depart(Solution *solution, float dateMax);
 
 /*
  * Fait muter une solution
  */
-void muter(Solution *solution, Instance *instance);
+void mutate(Solution *solution, Instance *instance);
 
 /*
  * Effectue des mutations sur une population

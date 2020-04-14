@@ -27,6 +27,4 @@ class Solution
     void print();
 };
 
-Solution * generateSolution(Instance *instance);
-
 #endif
