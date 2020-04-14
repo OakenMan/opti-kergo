@@ -23,7 +23,9 @@ unsigned int bestSolution(vector<Solution*> population, bool onlyfeasible) {
 
    for(unsigned int i=0; i<population.size(); i++) {
       if(onlyfeasible) {
-         ///
+         if(population[i]->i_valeur_fonction_objectif > bestSolution && population[i]->i_valeur_score_negatif == 0) {
+            bestSolution = population[i]->i_valeur_fonction_objectif;
+         }
       }
       else {
          if(population[i]->i_valeur_fonction_objectif > bestSolution) {
@@ -82,6 +84,8 @@ int main(int argc, const char * argv[])
 
                       /*------------- Et maintenant... l'algo -------------*/
 
+                      srand(time(NULL));
+
                       vector<unsigned int> scores;
 
                       int nbIter = 1000;
@@ -91,21 +95,23 @@ int main(int argc, const char * argv[])
 
                       for(int i=0; i<nbIter; i++) {
                         scores.push_back(bestSolution(population, false));
-                        vector<Solution*> selection = Selection(population);     // Selection sur la population
-                        vector<Solution*> children = reproduction(selection);    // Reproduction de la selection
-                        mutation(children, instance);                            // Mutation des enfants
-                        fusion(&selection, children);                            // Ajout des enfants à la population de base
+                        vector<Solution*> selection = Selection(population);                 // Selection sur la population
+                        vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
+                        mutation(children, instance);                                        // Mutation des enfants
+                        fusion(&selection, children);                                        // Ajout des enfants à la population de base
                       }
 
-                      i_best_solution_score = bestSolution(population, false);
+                      i_best_solution_score = bestSolution(population, true);
 
                       /*---------------------------------------------------*/
 
                       chrono_end = chrono::system_clock::now();
 
-                      cout<< "Fin de résolution de "<<s_tmp<<endl;
-
                       elapsed=chrono_end-chrono_start;
+
+                      printVector(scores);
+
+                      cout<< "Fin de résolution de [" << s_tmp << "] en " << elapsed.count() << "s. Best = " << i_best_solution_score << endl;
 
                       // écriture sur le fichier de sortie
                       fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;

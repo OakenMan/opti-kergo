@@ -26,7 +26,7 @@ vector_methods.o: vector_methods.cpp Solution.cpp
 selection.o: selection.cpp Solution.cpp Instance.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-reproduction.o: reproduction.cpp Solution.cpp
+reproduction.o: reproduction.cpp Solution.cpp Instance.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 mutation.o: mutation.cpp Solution.cpp Instance.cpp vector_methods.cpp
