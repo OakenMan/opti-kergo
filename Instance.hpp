@@ -15,6 +15,7 @@ class Instance
         unsigned int i_Nombre_POI;           //Nombre de POIs numéroté (id) de 0 à i_Nombre_POI-1
         unsigned int i_Nombre_Jour;          //Nombre de jours numéroté (id) de 0 à i_Nombre_Jour-1
 
+        unsigned int i_Duree_Max_Jour;
         vector<float> v_f_Duree_Max_Voyage_Par_Jour; //Durée maxiamel d'une journée (heure arrivé - heure départ pour chaque jour)
 
         class POI
@@ -53,6 +54,7 @@ class Instance
         unsigned int get_Nombre_Hotel(void);
         unsigned int get_Nombre_POI(void);
         unsigned int get_Nombre_Jour(void);
+        unsigned int get_Duree_Max_Jour(void);
         float get_POI_Duree_Max_Voyage(unsigned int i_Id_jour) throw(string);
         float get_POI_Coord_X(unsigned int i_Id_POI) throw(string);
         float get_POI_Coord_Y(unsigned int i_Id_POI) throw(string);

@@ -41,6 +41,7 @@ bool Instance::chargement_Instance(string s_chemin) throw(string)
         i_Nombre_Hotel=i_Nombre_Hotel+2;
 
         getline(fichier, s_tmp);
+        fichier >> i_Duree_Max_Jour;
         getline(fichier, s_tmp);
         getline(fichier, s_tmp);
 
@@ -189,6 +190,11 @@ unsigned int Instance::get_Nombre_POI(void)
 unsigned int Instance::get_Nombre_Jour(void)
 {
     return i_Nombre_Jour;
+}
+
+unsigned int Instance::get_Duree_Max_Jour(void)
+{
+    return i_Duree_Max_Jour;
 }
 
 float Instance::get_POI_Duree_Max_Voyage(unsigned int i_Id_jour) throw(string)

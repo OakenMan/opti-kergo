@@ -5,6 +5,9 @@ EXEC=exec
 
 all: $(EXEC)
 
+test: test.o Instance.o Solution.o vector_methods.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
 exec: main.o Instance.o Solution.o vector_methods.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
@@ -20,7 +23,11 @@ vector_methods.o : vector_methods.cpp
 main.o: main.cpp Instance.cpp Solution.cpp vector_methods.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
+
 repro.o: reproduction.cpp Solution.cpp Instance.cpp vector_methods.cpp generation.cpp
+
+test.o: test.cpp Instance.cpp Solution.cpp vector_methods.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
 	rm -f *.o core

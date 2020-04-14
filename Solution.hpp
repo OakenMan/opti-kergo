@@ -3,7 +3,7 @@
 
 #include "Instance.hpp"
 #include <stdio.h>
-#include <vector>
+#include <vector>       
 
 using namespace std;
 
@@ -15,6 +15,7 @@ class Solution
         vector<float> v_Date_Depart;                    // Donne la date/heure de départ de l'hôtel de chaque jour. La taille du tableau est égale au nombre de jours.
 
         unsigned int i_valeur_fonction_objectif;                 // Valeur de la fonction objectif (somme des scores des POIs visités
+        unsigned int i_valeur_score_negatif;                     // Valeur du score "d'infaisabilite", utiliser pour affiner la séléction de
 
     public:
     /* Constructeurs et destructeur  */
@@ -22,8 +23,11 @@ class Solution
         virtual ~Solution();
 
     bool Verification_Solution(Instance *instance);
-
+    void Evaluation_Solution(Instance * instance);
     void print();
 };
+
+unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet, float heure_limite, int fromA, int fromB, int toa, int tob);
+vector<Solution*> Selection(vector<Solution*> solutions);
 
 #endif
