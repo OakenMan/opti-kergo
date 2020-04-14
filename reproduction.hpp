@@ -1,9 +1,8 @@
 #ifndef reproduction_hpp
 #define reproduction_hpp
 
-#include "Instance.hpp"
 #include "Solution.hpp"
-#include "generation.hpp"
+#include "Instance.hpp"
 #include "vector_methods.hpp"
 #include <stdio.h>
 #include <vector>
@@ -38,11 +37,11 @@ vector<float> shuffle_float(vector<float> *p1, vector<float> *p2);
 /*
  * Créé une nouvelle solution (enfant) à partir de deux autres solutions (parents)
  */
-Solution * reproduce(Solution *p1, Solution *p2);
+Solution * reproduce(Solution *p1, Solution *p2, Instance *instance);
 
 /*
  * Reproduit une population
  */
-vector<Solution*> reproduction(vector<Solution*> population);
+vector<Solution*> reproduction(vector<Solution*> population, Instance *instance);
 
 #endif

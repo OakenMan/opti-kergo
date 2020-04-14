@@ -46,6 +46,8 @@ Solution * generateSolution(Instance *instance) {
       sol->v_v_Sequence_Id_Par_Jour.push_back(poiList);
    }
 
+   sol->Evaluation_Solution(instance);
+
    return sol;
 }
 

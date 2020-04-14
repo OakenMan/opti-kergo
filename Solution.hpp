@@ -2,8 +2,9 @@
 #define Solution_hpp
 
 #include "Instance.hpp"
+#include "vector_methods.hpp"
 #include <stdio.h>
-#include <vector>       
+#include <vector>
 
 using namespace std;
 
@@ -28,6 +29,5 @@ class Solution
 };
 
 unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet, float heure_limite, int fromA, int fromB, int toa, int tob);
-vector<Solution*> Selection(vector<Solution*> solutions);
 
 #endif

@@ -1,7 +1,6 @@
 #include "Solution.hpp"
 #include <cstdlib>
 #include <iostream>
-#include <iomanip>
 #include <algorithm>
 #include <set>
 #include <cmath>
@@ -311,78 +310,4 @@ unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet
         // cout << "score de retard ceiled = " << floor((retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa) << endl << endl;
         return floor((retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa);
     }
-}
-
-vector<Solution*> Selection(vector<Solution*> solutions)
-{
-    vector<Solution*> solutions_realisables;
-    vector<Solution*> solutions_irrealisables;
-    vector<Solution*> nouvelle_generation;
-    unsigned int taille_pop = solutions.size();
-    unsigned int i;
-
-    //On sépare l'ensemble de solutions en solutions réalisables et irréalisables
-    for (i = 0; i < taille_pop; i++)
-    {
-        if (solutions[i]->i_valeur_score_negatif > 0)
-        {
-            solutions_irrealisables.push_back(solutions[i]);
-        }
-        else
-        {
-            solutions_realisables.push_back(solutions[i]);
-        }
-    }
-
-    trier_tableau_par_score_objectif(&solutions_realisables);
-    trier_tableau_par_ratio_objectif_negatif(&solutions_irrealisables);
-
-    /*
-    On remplit le tableau de la nouvelle génération de 25% des meilleurs solution réalisables et irréalisables si possible.
-    Sinon, on comble avec l'un ou l'autre des deux domaines.
-    */
-    if (solutions_realisables.size() >= taille_pop/4 && solutions_irrealisables.size() >= taille_pop/4)
-    {
-        for (i = 0; i < taille_pop/4; i++)
-        {
-            nouvelle_generation.push_back(solutions_realisables[i]);
-        }
-
-        for (i = 0; i < taille_pop/4; i++)
-        {
-            nouvelle_generation.push_back(solutions_irrealisables[i]);
-        }
-    }
-    else if (solutions_realisables.size() >= taille_pop/4 && solutions_irrealisables.size() < taille_pop/4)
-    {
-        for (i = 0; i < solutions_irrealisables.size(); i++)
-        {
-            nouvelle_generation.push_back(solutions_irrealisables[i]);
-        }
-
-        for (i = 0; i < taille_pop/2 - solutions_irrealisables.size(); i++)
-        {
-            nouvelle_generation.push_back(solutions_realisables[i]);
-        }
-    }
-    else if (solutions_realisables.size() < taille_pop/4 && solutions_irrealisables.size() >= taille_pop/4)
-    {
-        for (i = 0; i < solutions_realisables.size(); i++)
-        {
-            nouvelle_generation.push_back(solutions_realisables[i]);
-        }
-        for (i = 0; i < taille_pop/2 - solutions_realisables.size(); i++)
-        {
-            nouvelle_generation.push_back(solutions_irrealisables[i]);
-        }
-    }
-    else
-    {
-        cout << "ATTENTION ERREUR SUR LA SELECTION" << endl;
-    }
-
-    //On mélange le tableau des survivants pour faciliter le travail pour la suite
-    melange_tableau(&nouvelle_generation);
-
-    return nouvelle_generation;
 }

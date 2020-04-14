@@ -1,89 +1,81 @@
-#include "vector_methods.hpp"
+#include "selection.hpp"
+#include <cstdlib>
+#include <cmath>
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <iomanip>
 
-/*
- * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
- */
-void printVector(vector<unsigned int> &v) {
-   cout << "[ ";
-   for(unsigned int i=0; i<v.size(); i++) {
-      cout << v[i] << " ";
-   }
-   cout << "] (n=" << v.size() << ")";
-   cout << endl;
+vector<Solution*> Selection(vector<Solution*> solutions)
+{
+    vector<Solution*> solutions_realisables;
+    vector<Solution*> solutions_irrealisables;
+    vector<Solution*> nouvelle_generation;
+    unsigned int taille_pop = solutions.size();
+    unsigned int i;
+
+    //On sépare l'ensemble de solutions en solutions réalisables et irréalisables
+    for (i = 0; i < taille_pop; i++)
+    {
+        if (solutions[i]->i_valeur_score_negatif > 0)
+        {
+            solutions_irrealisables.push_back(solutions[i]);
+        }
+        else
+        {
+            solutions_realisables.push_back(solutions[i]);
+        }
+    }
+
+    trier_tableau_par_score_objectif(&solutions_realisables);
+    trier_tableau_par_ratio_objectif_negatif(&solutions_irrealisables);
+
+    /*
+    On remplit le tableau de la nouvelle génération de 25% des meilleurs solution réalisables et irréalisables si possible.
+    Sinon, on comble avec l'un ou l'autre des deux domaines.
+    */
+    if (solutions_realisables.size() >= taille_pop/4 && solutions_irrealisables.size() >= taille_pop/4)
+    {
+        for (i = 0; i < taille_pop/4; i++)
+        {
+            nouvelle_generation.push_back(solutions_realisables[i]);
+        }
+
+        for (i = 0; i < taille_pop/4; i++)
+        {
+            nouvelle_generation.push_back(solutions_irrealisables[i]);
+        }
+    }
+    else if (solutions_realisables.size() >= taille_pop/4 && solutions_irrealisables.size() < taille_pop/4)
+    {
+        for (i = 0; i < solutions_irrealisables.size(); i++)
+        {
+            nouvelle_generation.push_back(solutions_irrealisables[i]);
+        }
+
+        for (i = 0; i < taille_pop/2 - solutions_irrealisables.size(); i++)
+        {
+            nouvelle_generation.push_back(solutions_realisables[i]);
+        }
+    }
+    else if (solutions_realisables.size() < taille_pop/4 && solutions_irrealisables.size() >= taille_pop/4)
+    {
+        for (i = 0; i < solutions_realisables.size(); i++)
+        {
+            nouvelle_generation.push_back(solutions_realisables[i]);
+        }
+        for (i = 0; i < taille_pop/2 - solutions_realisables.size(); i++)
+        {
+            nouvelle_generation.push_back(solutions_irrealisables[i]);
+        }
+    }
+    else
+    {
+        cout << "ATTENTION ERREUR SUR LA SELECTION" << endl;
+    }
+
+    //On mélange le tableau des survivants pour faciliter le travail pour la suite
+    melange_tableau(&nouvelle_generation);
+
+    return nouvelle_generation;
 }
-
-/*
- * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
- */
-void printVector(vector<float> &v) {
-   cout << fixed << setprecision(2);
-   cout << "[ ";
-   for(unsigned int i=0; i<v.size(); i++) {
-      cout << v[i] << " ";
-   }
-   cout << "]" << endl;
-}
-
-/*
- * Retourne vrai si v contient value, faux sinon
- */
-bool contains(vector<unsigned int> v, unsigned int value) {
-   return find(v.begin(), v.end(), value) != v.end();
-}
-
-/*
- * Retourne l'index de value dans v, ou v.end()-1 si value n'est pas dans v
- */
-unsigned int indexOf(vector<unsigned int> v, unsigned int value) {
-   for(unsigned int i=0; i<v.size(); i++) {
-      if(v[i] == value) {
-         return i;
-      }
-   }
-   return v.size()-1;
-}
-
-/*
- * Génère un vecteur aléatoirement, de taille compris entre minSize et maxSize, et de valeurs comprises entre 0 et maxValue
- */
-vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, unsigned int maxValue) {
-   vector<unsigned int> v;
-
-   unsigned int size = minSize + rand() % (maxSize - minSize + 1);
-
-   for(unsigned int i=0; i<size; i++) {
-      unsigned int r = rand() % (maxValue + 1);
-      if(contains(v, r)) {
-         i--;
-      }
-      else {
-         v.push_back(r);
-      }
-   }
-
-   return v;
-}
-
-/*
- * Fusionne tous les vecteurs d'un vecteur de vecteur, pour ne former qu'un seul vecteur ._.
- */
-vector<unsigned int> linkVectors(vector<vector<unsigned int>> v) {
-
-   vector<unsigned int> linked;
-   for(unsigned int i=0; i<v.size(); i++) {
-      for(unsigned int j=0; j<v[i].size(); j++) {
-         linked.push_back(v[i][j]);
-      }
-   }
-
-   return linked;
-
-}
-<<<<<<< HEAD
 
 void melange_tableau(vector<Solution*>* solutions)
 {
@@ -137,7 +129,7 @@ int indice_ratio_obj_neg_max(vector<Solution*>* solutions, int indice_depart)
     }
     else
     {
-        ratio_tmp = (float)solutions->at(indice_depart)->i_valeur_fonction_objectif / (float)solutions->at(indice_depart)->i_valeur_score_negatif;   
+        ratio_tmp = (float)solutions->at(indice_depart)->i_valeur_fonction_objectif / (float)solutions->at(indice_depart)->i_valeur_score_negatif;
         indice_tmp = indice_depart;
     }
 
@@ -189,7 +181,7 @@ int indice_score_objectif_max(vector<Solution*>* solutions, int indice_depart)
     }
     else
     {
-        valeur_tmp = solutions->at(indice_depart)->i_valeur_fonction_objectif;    
+        valeur_tmp = solutions->at(indice_depart)->i_valeur_fonction_objectif;
         indice_tmp = indice_depart;
     }
 
@@ -208,13 +200,10 @@ int indice_score_objectif_max(vector<Solution*>* solutions, int indice_depart)
 /*
  * Ajoute la population 2 à la population 1
  */
-void fusion(vector<Solution*> *pop1, vector<Solution*> pop2)
-{
+void fusion(vector<Solution*> *pop1, vector<Solution*> pop2) {
 
    // On ajoute la population 2 à la population 1
    for(unsigned int i=0; i<pop2.size(); i++) {
       pop1->push_back(pop2[i]);
    }
 }
-=======
->>>>>>> aa27f057fd5ad175df71033c96b22c737d547c13

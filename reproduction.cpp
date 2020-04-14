@@ -5,7 +5,7 @@
 #include <chrono>
 #include <limits.h>
 
-int main(int argc, const char * argv[]){
+/*int main(int argc, const char * argv[]){
 
    srand(time(NULL));
 
@@ -39,7 +39,7 @@ int main(int argc, const char * argv[]){
    cout << "time = " << elapsed.count() << endl;
 
    return 0;
-}
+}*/
 
 /*
  * Crossover PMX
@@ -304,7 +304,7 @@ vector<float> shuffle_float(vector<float> *p1, vector<float> *p2) {
 /*
  * Créé une nouvelle solution (enfant) à partir de deux autres solutions (parents)
  */
-Solution * reproduce(Solution *p1, Solution *p2) {
+Solution * reproduce(Solution *p1, Solution *p2, Instance *instance) {
 
    Solution * child = new Solution();
 
@@ -317,6 +317,8 @@ Solution * reproduce(Solution *p1, Solution *p2) {
    // On mélange des heures de départ
    child->v_Date_Depart = shuffle_float(&p1->v_Date_Depart, &p2->v_Date_Depart);
 
+   child->Evaluation_Solution(instance);
+
    return child;
 }
 
@@ -325,12 +327,12 @@ Solution * reproduce(Solution *p1, Solution *p2) {
  * [!] La taille de la population doit être PAIRE
  * O(p*n) avec p = taille de la population et n = nombre de POI visités par solution
  */
-vector<Solution*> reproduction(vector<Solution*> population) {
+vector<Solution*> reproduction(vector<Solution*> population, Instance *instance) {
    vector<Solution*> children;
 
    for(unsigned int i=0; i<population.size(); i+=2) {
-      children.push_back(reproduce(population[i], population[i+1]));
-      children.push_back(reproduce(population[i+1], population[i]));
+      children.push_back(reproduce(population[i], population[i+1], instance));
+      children.push_back(reproduce(population[i+1], population[i], instance));
    }
 
    return children;
