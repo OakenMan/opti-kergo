@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <set>
 #include <cmath>
+#include "vector_methods.hpp"
 
 Solution::Solution()
 {
@@ -272,14 +273,14 @@ void Solution::Evaluation_Solution(Instance * instance)
 void Solution::print() {
    cout << "---------- Solution ----------" << endl;
    cout << "Hôtels intermédiaires : ";
-   display(v_Id_Hotel_Intermedaire);
+   printVector(v_Id_Hotel_Intermedaire);
    cout << "Séquences de POI par jour : " << endl;
    for(unsigned int i=0; i<v_v_Sequence_Id_Par_Jour.size(); i++) {
       cout << i << " : ";
-      display(v_v_Sequence_Id_Par_Jour[i]);
+      printVector(v_v_Sequence_Id_Par_Jour[i]);
    }
    cout << "Heure de départ chaque jour : ";
-   display(v_Date_Depart);
+   printVector(v_Date_Depart);
    cout << "Score objectif = " << i_valeur_fonction_objectif << endl;
    cout << "Score négatif = " << i_valeur_score_negatif << endl;
 }

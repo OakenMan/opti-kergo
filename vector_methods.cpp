@@ -6,7 +6,16 @@
 /*
  * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
  */
-void print(vector<unsigned int> &v) {
+void printVector(vector<unsigned int> &v) {
+   cout << "[ ";
+   for(unsigned int i=0; i<v.size(); i++) {
+      cout << v[i] << " ";
+   }
+   cout << "] (n=" << v.size() << ")";
+   cout << endl;
+}
+
+void printVector(vector<float> &v) {
    cout << "[ ";
    for(unsigned int i=0; i<v.size(); i++) {
       cout << v[i] << " ";
@@ -189,11 +198,13 @@ int indice_score_objectif_max(vector<Solution*>* solutions, int indice_depart)
     }
 
     return indice_tmp;
+}
 
 /*
  * Ajoute la population 2 à la population 1
  */
-void fusion(vector<Solution*> *pop1, vector<Solution*> pop2) {
+void fusion(vector<Solution*> *pop1, vector<Solution*> pop2)
+{
 
    // On ajoute la population 2 à la population 1
    for(unsigned int i=0; i<pop2.size(); i++) {

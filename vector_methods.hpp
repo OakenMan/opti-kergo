@@ -10,7 +10,8 @@ using namespace std;
 /*
  * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
  */
-void print(vector<unsigned int> &v);
+void printVector(vector<unsigned int> &v);
+void printVector(vector<float> &v);
 
 /*
  * Retourne vrai si v contient value, faux sinon
