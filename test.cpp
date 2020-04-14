@@ -1,13 +1,14 @@
 #define CHEMIN_DOSSIER_DONNEES "Data/"
 #define NOM_FICHIER_LISTE_FICHIER_DONNEES "data.txt"
-#define NOM_FICHIER_LISTE_SORTIE "sortie.txt"
 
 #include <iostream>
 #include <fstream>
 #include <chrono>
 #include <algorithm>
+#include <time.h>
 #include "Instance.hpp"
 #include "Solution.hpp"
+#include "vector_methods.hpp"
 
 using namespace std;
 
@@ -18,17 +19,46 @@ Solution* mock_solution(Instance * instance);
 
 int main(int argc, const char * argv[])
 {
+	// srand(time(NULL));
+	srand(1);
     Instance * instance = charger_instance();
-    Solution* solution = mock_solution(instance);
     vector<Solution*> solutions;
-    solutions.push_back(solution);
-    //CALCULER SCORE : VALIDE
-    cout << "on test la fonction de calcul du score de retard" << endl;
-    calculer_score_retard(45, 20, 19, 0, 30, 1, 5);
-    calculer_score_retard(45, 25, 19, 0, 30, 1, 5);
-    calculer_score_retard(45, 30, 19, 0, 30, 1, 5);
-    calculer_score_retard(45, 40, 19, 0, 30, 1, 5);
-    calculer_score_retard(45, 44, 19, 0, 30, 1, 5);
+    for (unsigned int i = 0; i < 3; i++)
+    {
+    	cout << "*** Solution " << i << "***" << endl;
+    	solutions.push_back(generateSolution(instance));
+    	solutions[i]->print();
+    	cout << endl;
+    }
+    // //CALCULER SCORE : VALIDE
+    // cout << "on test la fonction de calcul du score de retard" << endl;
+    // calculer_score_retard(45, 20, 19, 0, 30, 1, 5);
+    // calculer_score_retard(45, 25, 19, 0, 30, 1, 5);
+    // calculer_score_retard(45, 30, 19, 0, 30, 1, 5);
+    // calculer_score_retard(45, 40, 19, 0, 30, 1, 5);
+    // calculer_score_retard(45, 44, 19, 0, 30, 1, 5);
+
+    //FONCTION VECTORS :
+    cout << "Indice de la solution ayant le score objectif max : " << indice_score_objectif_max(&solutions) << endl;
+    cout << "Indice de la solution ayant le ratio score obj. / score neg. max : " << indice_ratio_obj_neg_max(&solutions) << endl;
+    cout << "On trie le tableau de solutions ayant un score neg" << endl;
+    trier_tableau_par_ratio_objectif_negatif(&solutions);
+    cout << "nouveau tableau : " << endl;
+    for (unsigned int i = 0; i < 3; i++)
+    {
+    	cout << "*** Solution " << i << "***" << endl;
+    	solutions[i]->print();
+    	cout << endl;
+    }
+    cout << "on mélange" << endl;
+    melange_tableau(&solutions);
+    cout << "nouveau tableau : " << endl;
+    for (unsigned int i = 0; i < 3; i++)
+    {
+    	cout << "*** Solution " << i << "***" << endl;
+    	solutions[i]->print();
+    	cout << endl;
+    }
 }
 
 Instance* charger_instance()

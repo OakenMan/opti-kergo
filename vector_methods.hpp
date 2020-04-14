@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include "Solution.hpp"
 
 using namespace std;
 
@@ -30,5 +31,11 @@ vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, un
  * Fusionne tous les vecteurs d'un vecteur de vecteur, pour ne former qu'un seul vecteur ._.
  */
 vector<unsigned int> linkVectors(vector<vector<unsigned int>> v);
+
+void melange_tableau(vector<Solution*>* solutions);
+void trier_tableau_par_ratio_objectif_negatif(vector<Solution*>* solutions);
+int indice_ratio_obj_neg_max(vector<Solution*>* solutions, int indice_depart=0);
+void trier_tableau_par_score_objectif(vector<Solution*>* solutions);
+int indice_score_objectif_max(vector<Solution*>* solutions, int indice_depart=0);
 
 #endif
