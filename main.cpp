@@ -20,19 +20,25 @@ int Resolution(Instance * instance);
 
 unsigned int bestSolution(vector<Solution*> population, bool onlyfeasible) {
    unsigned int bestSolution = 0;
+   unsigned int index = 0;
 
    for(unsigned int i=0; i<population.size(); i++) {
       if(onlyfeasible) {
          if(population[i]->i_valeur_fonction_objectif > bestSolution && population[i]->i_valeur_score_negatif == 0) {
             bestSolution = population[i]->i_valeur_fonction_objectif;
+            index = i;
          }
       }
       else {
          if(population[i]->i_valeur_fonction_objectif > bestSolution) {
             bestSolution = population[i]->i_valeur_fonction_objectif;
+            index = i;
          }
       }
    }
+
+   cout << "Meilleur solution = " << endl;
+   population[index]->print();
 
    return bestSolution;
 }
@@ -88,20 +94,50 @@ int main(int argc, const char * argv[])
 
                       vector<unsigned int> scores;
 
-                      int nbIter = 1000;
+                      int nbIter = 10000;
                       int populationSize = 1000;
+
+                      bool debug = false;
 
                       vector<Solution*> population = generation(instance, populationSize);
 
+                      bestSolution(population, false);
+
                       for(int i=0; i<nbIter; i++) {
-                        scores.push_back(bestSolution(population, false));
+                        // scores.push_back(bestSolution(population, false));
+                        if(debug) {
+                           cout << "\n========== POPULATION DE BASE ==========" << endl;
+                           printPopulation(population);
+                        }
+
                         vector<Solution*> selection = Selection(population);                 // Selection sur la population
+                        if(debug) {
+                           cout << "\n========== SELECTION ==========" << endl;
+                           printPopulation(selection);
+                        }
+
                         vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
+                        if(debug) {
+                           cout << "\n========== ENFANTS ==========" << endl;
+                           printPopulation(children);
+                        }
+
                         mutation(children, instance);                                        // Mutation des enfants
-                        fusion(&selection, children);                                        // Ajout des enfants à la population de base
+                        if(debug) {
+                           cout << "\n========== MUTATIONS ==========" << endl;
+                           printPopulation(children);
+                        }
+
+                        population.clear();
+                        population = fusion(selection, children);                            // Ajout des enfants à la population de base
                       }
 
-                      i_best_solution_score = bestSolution(population, true);
+                      if(debug) {
+                        cout << "\n========== POPULATION FINALE ==========" << endl;
+                        printPopulation(population);
+                      }
+
+                      i_best_solution_score = bestSolution(population, false);
 
                       /*---------------------------------------------------*/
 

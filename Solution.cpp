@@ -266,6 +266,10 @@ void Solution::Evaluation_Solution(Instance * instance)
             }
         }
     }
+
+    if(i_valeur_score_negatif == 0) {
+      // cout << "OH PUTAIN ELLE EST FAISABLE !!! AVEC UN SCORE DE " << i_valeur_fonction_objectif << endl;
+    }
 }
 
 void Solution::print() {
@@ -281,6 +285,7 @@ void Solution::print() {
    printVector(v_Date_Depart);
    cout << "Score objectif = " << i_valeur_fonction_objectif << endl;
    cout << "Score négatif = " << i_valeur_score_negatif << endl;
+   cout << "Ratio = " << float(i_valeur_fonction_objectif/i_valeur_score_negatif) << endl;
 }
 
 //Calcul le retard en tant que pourcentage de la durée max d'une journée et map la valeur obtenu de l'intervalle from = [A, B] à to = [a, b]
@@ -309,4 +314,11 @@ unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet
         // cout << "score de retard ceiled = " << floor((retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa) << endl << endl;
         return floor((retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa);
     }
+}
+
+void printPopulation(vector<Solution*> population) {
+   cout << "### Taille de la population : " << population.size() << endl;
+   for(unsigned int i=0; i<population.size(); i++) {
+      population[i]->print();
+   }
 }
