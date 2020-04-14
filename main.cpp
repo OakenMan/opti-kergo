@@ -116,6 +116,8 @@ int main(int argc, const char * argv[])
                     }
                     else {
                        cout<<"Erreur impossible "<<endl;
+                       s_tmp="";
+                       getline(fichier,s_tmp);		// on relie une ligne et on recommence
                     }
                 }
                 fichier_Sortie.close();
