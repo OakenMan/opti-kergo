@@ -1,5 +1,7 @@
 #include "Solution.hpp"
 #include <iostream>
+#include <iomanip>
+#include <algorithm>
 #include <set>
 
 Solution::Solution()
@@ -8,7 +10,9 @@ Solution::Solution()
 }
 Solution::~Solution()
 {
-
+   v_Id_Hotel_Intermedaire.clear();
+   v_v_Sequence_Id_Par_Jour.clear();
+   v_Date_Depart.clear();
 }
 
 bool Solution::Verification_Solution(Instance *instance)
@@ -156,26 +160,79 @@ bool Solution::Verification_Solution(Instance *instance)
 }
 
 void display(vector<unsigned int> &v) {
+   cout << "[ ";
    for(unsigned int i=0; i<v.size(); i++) {
       cout << v[i] << " ";
    }
+   cout << "] (n=" << v.size() << ")" << endl;
 }
 
 void display(vector<float> &v) {
+   cout << fixed << setprecision(2);
+   cout << "[ ";
    for(unsigned int i=0; i<v.size(); i++) {
       cout << v[i] << " ";
    }
+   cout << "]" << endl;
 }
 
 void Solution::print() {
+   cout << "---------- Solution ----------" << endl;
    cout << "Hôtels intermédiaires : ";
    display(v_Id_Hotel_Intermedaire);
-   cout << "\nSéquences de POI par jour :";
+   cout << "Séquences de POI par jour : " << endl;
    for(unsigned int i=0; i<v_v_Sequence_Id_Par_Jour.size(); i++) {
-      cout << "\n" << i << " : ";
+      cout << i << " : ";
       display(v_v_Sequence_Id_Par_Jour[i]);
    }
-   cout << "\nHeure de départ chaque jour :";
+   cout << "Heure de départ chaque jour : ";
    display(v_Date_Depart);
-   cout << "\nSCORE = " << i_valeur_fonction_objectif << endl;
+   //cout << "SCORE = " << i_valeur_fonction_objectif << endl;
+}
+
+Solution * generateSolution(Instance *instance) {
+   Solution *sol = new Solution();
+
+   // Génération de "v_Id_Hotel_Intermedaire"
+   for(unsigned int i=0; i<instance->get_Nombre_Jour()-1; i++) {
+      unsigned int idHotel = rand() % instance->get_Nombre_Hotel();     // génère un id entre 0 et nbHotels-1
+      sol->v_Id_Hotel_Intermedaire.push_back(idHotel);
+   }
+
+   // Génération de "v_v_Sequence_Id_Par_Jour" et "v_Date_Depart"
+   for(unsigned int i=0; i<instance->get_Nombre_Jour(); i++) {
+      float dateMax = 24.0;   // TODO : récupérer ce nombre depuis l'instance, puis soustraire la durée max de voyage par jour
+      float dateDepart = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/dateMax));  // génère un float entre 0.0 et dateMax
+      sol->v_Date_Depart.push_back(dateDepart);
+
+      vector<unsigned int> poiList;
+      unsigned int nbPOIthisDay = 5 + rand() % (instance->get_Nombre_POI() / (instance->get_Nombre_Jour() * 3));    // génère un nombre entre 0 et nbPOI/(nbJours*3)-1
+
+      for(unsigned int j=0; j<nbPOIthisDay; j++) {
+         bool success = false;
+         while(!success) {
+            bool found = false;
+            unsigned int newPOI = rand() % instance->get_Nombre_POI();
+
+            // Regarde si newPOI est déjà dans les jours précédents
+            for(unsigned int k=0; k<sol->v_v_Sequence_Id_Par_Jour.size(); k++) {
+               if(contains(sol->v_v_Sequence_Id_Par_Jour[k], newPOI)) {
+                  found = true;
+               }
+            }
+            // Et dans le jour actuel
+            if(contains(poiList, newPOI)) {
+               found = true;
+            }
+            if(!found) {
+               poiList.push_back(newPOI);
+               success = true;
+            }
+         }
+      }
+
+      sol->v_v_Sequence_Id_Par_Jour.push_back(poiList);
+   }
+
+   return sol;
 }

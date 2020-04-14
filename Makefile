@@ -1,20 +1,29 @@
 CC=g++
-CFLAGS=-Wall -O -Wno-deprecated
+CFLAGS=-Wall -O -Wno-deprecated -g
 LDFLAGS=
 EXEC=exec
 
 all: $(EXEC)
 
-exec: main.o Instance.o Solution.o
+test: test.o Instance.o Solution.o vector_methods.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+exec: main.o Instance.o Solution.o vector_methods.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 Instance.o: Instance.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-Solution.o : Solution.cpp
+Solution.o : Solution.cpp vector_methods.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-main.o: main.cpp Instance.hpp Solution.hpp
+vector_methods.o : vector_methods.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+main.o: main.cpp Instance.cpp Solution.cpp vector_methods.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
+
+test.o: test.cpp Instance.cpp Solution.cpp vector_methods.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean:
@@ -23,6 +32,12 @@ clean:
 mrproper: clean
 	rm -f $(EXEC)
 
-valgrind: main.o Instance.o Solution.o
-	$(CC) -g -o $@ $^ $(LDFLAGS)
-	valgrind ./exec -f -leak-check=full
+# j'ai rajouté un argumenter au valgrind histoire de pouvoir faire make valgrind ARG="..."
+valgrind: $(ARG)
+	valgrind ./$(ARG) -f -tool=memcheck -leak-check=full track-origin=yes
+
+repro: reproduction.cpp Solution.cpp Instance.cpp vector_methods.cpp
+	$(CC) -o $@ $^ $(CFLAGS)
+
+muta: mutation.cpp Solution.cpp Instance.cpp vector_methods.cpp
+	$(CC) -o $@ $^ $(CFLAGS)
