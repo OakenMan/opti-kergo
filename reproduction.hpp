@@ -3,6 +3,7 @@
 
 #include "Instance.hpp"
 #include "Solution.hpp"
+#include "generation.hpp"
 #include "vector_methods.hpp"
 #include <stdio.h>
 #include <vector>
@@ -24,15 +25,20 @@ vector<unsigned int> pmx(vector<unsigned int> p1, vector<unsigned int> p2);
 vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2);
 
 /*
+ * Applique un algo. de crossover (actuellement OX1) entre p1 et p2 (tableaux des POI visités chaque jour)
+ */
+vector<vector<unsigned int>> crossover(vector<vector<unsigned int>> p1, vector<vector<unsigned int>> p2);
+
+/*
  * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement (possibilité de le générer différement)
  */
-vector<unsigned int> shuffle_int(vector<unsigned int> p1, vector<unsigned int> p2);
-vector<float> shuffle_float(vector<float> p1, vector<float> p2);
+vector<unsigned int> shuffle_int(vector<unsigned int> *p1, vector<unsigned int> *p2);
+vector<float> shuffle_float(vector<float> *p1, vector<float> *p2);
 
 /*
  * Créé une nouvelle solution (enfant) à partir de deux autres solutions (parents)
  */
-Solution * faireUnBebe(Solution *papa, Solution *maman);
+Solution * reproduce(Solution *p1, Solution *p2);
 
 /*
  * Reproduit une population

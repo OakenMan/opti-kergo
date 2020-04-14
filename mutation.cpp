@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <chrono>
 #include <limits.h>
-#include <thread>
 
 int main(int argc, const char * argv[]){
 
@@ -13,21 +12,24 @@ int main(int argc, const char * argv[]){
    chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
    chrono::duration<double> elapsed;
 
+   // Lecture de l'instance
    Instance *instance = new Instance();
    if(!instance->chargement_Instance("Data/Inst8.txt")) {
       cerr << "Impossible de charger l'instance" << endl;
    }
 
+   // Génération de la population de base
+   vector<Solution*> population = generation(instance, 1000);
+
    chrono_start = chrono::system_clock::now();
 
-   for(int i=0; i<100; i++) {
-
-   Solution * solution = generateSolution(instance);
-   muter(solution, instance);
-
-   }
+   // Mutation de la population
+   mutation(population, instance);
 
    chrono_end = chrono::system_clock::now();
+
+   // On supprime la population
+   deletePopulation(population);
 
    elapsed=chrono_end-chrono_start;
 
@@ -101,8 +103,12 @@ void muter_Date_Depart(Solution *solution, float dateMax) {
    // cout << "DATE : changement de la date de départ du jour " << day << " de " << change << endl;
 }
 
-void muter(Solution *solution, Instance *instance) {
+/*
+ * Fait muter une solution
+ */
+void mutate(Solution *solution, Instance *instance) {
 
+   // génère un float entre 0 et 100
    if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < PROBA_MUT_HOTEL) {
       muter_Hotels_Intermediares(solution, instance->get_Nombre_Hotel());
       // cout << "Mutation sur les hôtels !" << endl;
@@ -120,10 +126,13 @@ void muter(Solution *solution, Instance *instance) {
 
 }
 
+/*
+ * Effectue des mutations sur une population
+ */
 void mutation(vector<Solution*> population, Instance *instance) {
 
    for(unsigned int i=0; i<population.size(); i++) {
-      muter(population[i], instance);
+      mutate(population[i], instance);
    }
 
 }

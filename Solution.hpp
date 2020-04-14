@@ -27,11 +27,6 @@ class Solution
     void print();
 };
 
-Solution * generateSolution(Instance *instance);
-
-void display(vector<unsigned int> &v);
-void display(vector<float> &v);
-
 unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet, float heure_limite, int fromA, int fromB, int toa, int tob);
 vector<Solution*> Selection(vector<Solution*> solutions);
 

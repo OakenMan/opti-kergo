@@ -36,8 +36,8 @@ mrproper: clean
 valgrind: $(ARG)
 	valgrind ./$(ARG) -f -tool=memcheck -leak-check=full track-origin=yes
 
-repro: reproduction.cpp Solution.cpp Instance.cpp vector_methods.cpp
+repro: reproduction.cpp Solution.cpp Instance.cpp vector_methods.cpp generation.cpp
 	$(CC) -o $@ $^ $(CFLAGS)
 
-muta: mutation.cpp Solution.cpp Instance.cpp vector_methods.cpp
+muta: mutation.cpp Solution.cpp Instance.cpp vector_methods.cpp generation.cpp
 	$(CC) -o $@ $^ $(CFLAGS)
