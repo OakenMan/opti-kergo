@@ -1,5 +1,4 @@
 #include "Solution.hpp"
-#include "vector_methods.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <algorithm>

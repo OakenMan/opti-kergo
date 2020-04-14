@@ -8,10 +8,10 @@ all: $(EXEC)
 test: test.o Instance.o Solution.o vector_methods.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-exec: main.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o
+exec: main.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-main.o: main.cpp Instance.cpp Solution.cpp generation.cpp selection.cpp reproduction.cpp mutation.cpp
+main.o: main.cpp Instance.cpp Solution.cpp generation.cpp selection.cpp reproduction.cpp mutation.cpp vector_methods.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 Instance.o: Instance.cpp

@@ -7,7 +7,7 @@
 /*
  * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
  */
-void print(vector<unsigned int> &v) {
+void printVector(vector<unsigned int> &v) {
    cout << "[ ";
    for(unsigned int i=0; i<v.size(); i++) {
       cout << v[i] << " ";
@@ -19,7 +19,7 @@ void print(vector<unsigned int> &v) {
 /*
  * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
  */
-void print(vector<float> &v) {
+void printVector(vector<float> &v) {
    cout << fixed << setprecision(2);
    cout << "[ ";
    for(unsigned int i=0; i<v.size(); i++) {

@@ -12,6 +12,7 @@
 #include "generation.hpp"
 #include "reproduction.hpp"
 #include "mutation.hpp"
+#include "vector_methods.hpp"
 
 using namespace std;
 
