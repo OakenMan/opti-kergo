@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include "Solution.hpp"
 
 using namespace std;
 

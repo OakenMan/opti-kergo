@@ -20,6 +20,8 @@ vector_methods.o : vector_methods.cpp
 main.o: main.cpp Instance.cpp Solution.cpp vector_methods.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
+repro.o: reproduction.cpp Solution.cpp Instance.cpp vector_methods.cpp generation.cpp
+
 clean:
 	rm -f *.o core
 

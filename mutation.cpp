@@ -5,7 +5,7 @@
 #include <chrono>
 #include <limits.h>
 
-int main(int argc, const char * argv[]){
+/*int main(int argc, const char * argv[]){
 
    srand(time(NULL));
 
@@ -36,7 +36,7 @@ int main(int argc, const char * argv[]){
    cout << "time = " << elapsed.count() << endl;
 
    return 0;
-}
+}*/
 
 void muter_Hotels_Intermediares(Solution *solution, unsigned int nbHotels) {
 

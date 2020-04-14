@@ -21,7 +21,7 @@ unsigned int bestSolution(vector<Solution*> population, bool onlyfeasible) {
    unsigned int bestSolution = 0;
 
    for(unsigned int i=0; i<population.size(); i++) {
-      if(feasible) {
+      if(onlyfeasible) {
          ///
       }
       else {
@@ -90,7 +90,7 @@ int main(int argc, const char * argv[])
 
                       for(int i=0; i<nbIter; i++) {
                         scores.push_back(bestSolution(population, false));
-                        // vector<Solution*> selection = selection(population);     // Selection sur la population
+                        vector<Solution*> selection;// = selection(population);     // Selection sur la population
                         vector<Solution*> children = reproduction(selection);    // Reproduction de la selection
                         mutation(children, instance);                            // Mutation des enfants
                         fusion(&selection, children);                            // Ajout des enfants à la population de base

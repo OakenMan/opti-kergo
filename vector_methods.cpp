@@ -15,6 +15,15 @@ void print(vector<unsigned int> &v) {
    cout << endl;
 }
 
+void print(vector<float> &v) {
+   cout << fixed << setprecision(2);
+   cout << "[ ";
+   for(unsigned int i=0; i<v.size(); i++) {
+      cout << v[i] << " ";
+   }
+   cout << "]" << endl;
+}
+
 /*
  * Retourne vrai si v contient value, faux sinon
  */
