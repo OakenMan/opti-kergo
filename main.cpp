@@ -8,10 +8,10 @@
 #include <algorithm>
 #include "Instance.hpp"
 #include "Solution.hpp"
+#include "selection.hpp"
 #include "generation.hpp"
 #include "reproduction.hpp"
 #include "mutation.hpp"
-#include "vector_methods.hpp"
 
 using namespace std;
 
@@ -90,7 +90,7 @@ int main(int argc, const char * argv[])
 
                       for(int i=0; i<nbIter; i++) {
                         scores.push_back(bestSolution(population, false));
-                        vector<Solution*> selection;// = selection(population);     // Selection sur la population
+                        vector<Solution*> selection = Selection(population);     // Selection sur la population
                         vector<Solution*> children = reproduction(selection);    // Reproduction de la selection
                         mutation(children, instance);                            // Mutation des enfants
                         fusion(&selection, children);                            // Ajout des enfants à la population de base

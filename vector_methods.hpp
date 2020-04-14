@@ -3,14 +3,18 @@
 
 #include <stdio.h>
 #include <vector>
-#include "Solution.hpp"
 
 using namespace std;
 
 /*
- * Affiche un vecteur sous cette forme : "[ x y z ] (n=taille) \n"
+ * Affiche un vecteur d'unsigned int sous cette forme : "[ x y z ] (n=taille) \n"
  */
-void print(vector<unsigned int> &v);
+void printVector(vector<unsigned int> &v);
+
+/*
+ * Affiche un vecteur de floats sous cette forme : "[ x y z ] (n=taille) \n"
+ */
+void printVector(vector<float> &v);
 
 /*
  * Retourne vrai si v contient value, faux sinon
@@ -31,15 +35,5 @@ vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, un
  * Fusionne tous les vecteurs d'un vecteur de vecteur, pour ne former qu'un seul vecteur ._.
  */
 vector<unsigned int> linkVectors(vector<vector<unsigned int>> v);
-
-void melange_tableau(vector<Solution*>* solutions);
-void trier_tableau_par_ratio_objectif_negatif(vector<Solution*>* solutions);
-int indice_ratio_obj_neg_max(vector<Solution*>* solutions, int indice_depart=0);
-void trier_tableau_par_score_objectif(vector<Solution*>* solutions);
-int indice_score_objectif_max(vector<Solution*>* solutions, int indice_depart=0);
-/*
- * Ajoute la population 2 à la population 1
- */
-void fusion(vector<Solution*> *pop1, vector<Solution*> pop2);
 
 #endif
