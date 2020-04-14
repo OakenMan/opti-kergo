@@ -8,10 +8,31 @@
 #include <algorithm>
 #include "Instance.hpp"
 #include "Solution.hpp"
+#include "generation.hpp"
+#include "reproduction.hpp"
+#include "mutation.hpp"
+#include "vector_methods.hpp"
 
 using namespace std;
 
 int Resolution(Instance * instance);
+
+unsigned int bestSolution(vector<Solution*> population, bool onlyfeasible) {
+   unsigned int bestSolution = 0;
+
+   for(unsigned int i=0; i<population.size(); i++) {
+      if(feasible) {
+         ///
+      }
+      else {
+         if(population[i]->i_valeur_fonction_objectif > bestSolution) {
+            bestSolution = population[i]->i_valeur_fonction_objectif;
+         }
+      }
+   }
+
+   return bestSolution;
+}
 
 int main(int argc, const char * argv[])
 {
@@ -45,7 +66,7 @@ int main(int argc, const char * argv[])
                     chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
                     chrono::duration<double> elapsed;
 
-                    int i_best_solution_score=0;
+                    unsigned int i_best_solution_score=0;
 
                     s_chemin=CHEMIN_DOSSIER_DONNEES;
 
@@ -58,7 +79,26 @@ int main(int argc, const char * argv[])
                     if(instance->chargement_Instance(s_chemin)) {	// on charge l'instance du fichier pointé par s_tmp
                       chrono_start = chrono::system_clock::now();
 
-                      i_best_solution_score=Resolution(instance);		// RÉSOLUTION DE L'INSTANCE
+                      /*------------- Et maintenant... l'algo -------------*/
+
+                      vector<unsigned int> scores;
+
+                      int nbIter = 1000;
+                      int populationSize = 1000;
+
+                      vector<Solution*> population = generation(instance, populationSize);
+
+                      for(int i=0; i<nbIter; i++) {
+                        scores.push_back(bestSolution(population, false));
+                        // vector<Solution*> selection = selection(population);     // Selection sur la population
+                        vector<Solution*> children = reproduction(selection);    // Reproduction de la selection
+                        mutation(children, instance);                            // Mutation des enfants
+                        fusion(&selection, children);                            // Ajout des enfants à la population de base
+                      }
+
+                      i_best_solution_score = bestSolution(population, false);
+
+                      /*---------------------------------------------------*/
 
                       chrono_end = chrono::system_clock::now();
 
@@ -118,8 +158,6 @@ int Resolution(Instance * instance)
 /* */
 
     uneSolution->Verification_Solution(instance);
-
-    uneSolution->print();
 
     i_val_Retour_Fct_obj=uneSolution->i_valeur_fonction_objectif;
     delete uneSolution;

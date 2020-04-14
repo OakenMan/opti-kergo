@@ -2,7 +2,6 @@
 #define Solution_hpp
 
 #include "Instance.hpp"
-#include "vector_methods.hpp"
 #include <stdio.h>
 #include <vector>
 

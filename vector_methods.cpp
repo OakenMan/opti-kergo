@@ -70,3 +70,15 @@ vector<unsigned int> linkVectors(vector<vector<unsigned int>> v) {
    return linked;
 
 }
+
+/*
+ * Ajoute la population 2 à la population 1
+ */
+void fusion(vector<Solution*> *pop1, vector<Solution*> pop2) {
+
+   // On ajoute la population 2 à la population 1
+   for(unsigned int i=0; i<pop2.size(); i++) {
+      pop1->push_back(pop2[i]);
+   }
+
+}

@@ -31,4 +31,9 @@ vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, un
  */
 vector<unsigned int> linkVectors(vector<vector<unsigned int>> v);
 
+/*
+ * Ajoute la population 2 à la population 1
+ */
+void fusion(vector<Solution*> *pop1, vector<Solution*> pop2);
+
 #endif
