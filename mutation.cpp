@@ -58,8 +58,14 @@ void muter_Sequence_POI(Solution *solution, unsigned int nbPOI) {
    // On choisit un jour à muter
    unsigned int day = rand() % solution->v_v_Sequence_Id_Par_Jour.size();
 
+   int random = rand()%2;
+   // Si y'a plus que un seul POI dans un jour, on force le rajout
+   if(solution->v_v_Sequence_Id_Par_Jour[day].size() <= 1) {
+      random = 1;
+   }
+
    // rand()%2 = 1 => on ajoute un POI
-   if(rand()%2) {
+   if(random) {
       bool success = false;
       while(!success) {
          // On génère un POI à insérer
@@ -95,7 +101,8 @@ void muter_Date_Depart(Solution *solution, float dateMax) {
    unsigned int day = rand() % solution->v_Date_Depart.size();
 
    float minChange = min(solution->v_Date_Depart[day], float(MAX_CHANGE_ON_DATE));
-   float maxChange = min(dateMax - solution->v_Date_Depart[day], float(MAX_CHANGE_ON_DATE));
+   float maxChange = min(float(0.01) + dateMax - solution->v_Date_Depart[day], float(MAX_CHANGE_ON_DATE));
+   cout.flush();
    float change = -minChange + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/maxChange));
 
    solution->v_Date_Depart[day] += change;

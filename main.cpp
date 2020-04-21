@@ -49,7 +49,7 @@ int main(int argc, const char * argv[])
                 {
                     Instance * instance = new Instance();
 
-					// création des timers
+					     // Création des timers
                     chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
                     chrono::duration<double> elapsed;
 
@@ -68,19 +68,21 @@ int main(int argc, const char * argv[])
 
                       /*------------- Paramètres de l'algo -------------*/
 
-                      srand(time(NULL));
+                      long seed = time(NULL);
+                      srand(seed);
+                      cout << "Seed : " << seed << endl;
                       cout << fixed << setprecision(2);
 
-                      const int nbIter = 1000;
-                      const double timeLimit = 60.0;              // en secondes
-                      const int maxIterWithoutAmeliorations = 50;
-
-                      const int populationSize = 1000;
+                      const int populationSize = 1000;   // doit être un nombre dont la moitié est paire
 
                       // Conditions d'arrêt
                       bool limitIterations =    false;
                       bool limitTime =          false;
                       bool limitAmelioration =  true;
+
+                      const int nbIter = 1000;
+                      const double timeLimit = 60.0;              // en secondes
+                      const int maxIterWithoutAmeliorations = 100;
 
                       bool finished = false;
 
@@ -89,6 +91,9 @@ int main(int argc, const char * argv[])
                       /*------------- Algorithme génétique -------------*/
 
                       vector<Solution*> population = generation(instance, populationSize);   // Génération de la population de base
+
+                      cout << "=== Population de base ===" << endl;
+                      analyse(population);
 
                       int iterations = 0;
                       int iterWithoutAmeliorations = 0;
@@ -114,19 +119,20 @@ int main(int argc, const char * argv[])
                         }
 
                         // Conditions d'arrêt
-                        if(limitIterations && iterations > nbIter)
+                        if(limitIterations && iterations >= nbIter-1)
                            finished = true;
-                        if(limitTime && elapsed.count() > timeLimit)
+                        if(limitTime && elapsed.count() >= timeLimit)
                            finished = true;
-                        if(limitAmelioration && iterWithoutAmeliorations > maxIterWithoutAmeliorations)
+                        if(limitAmelioration && iterWithoutAmeliorations >= maxIterWithoutAmeliorations)
                            finished = true;
 
                         i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
                       }
 
+                      cout << "\n=== Population finale ===" << endl;
                       analyse(population);
 
-                      deletePopulation(population);
+                      deletePopulation(population);   // On supprime la population finale à la fin de l'algo
 
                       /*---------------------------------------------------*/
 
@@ -143,7 +149,7 @@ int main(int argc, const char * argv[])
 
                     }
                     else {
-                       cout<<"Erreur impossible "<<endl;
+                       cout<<"Erreur : impossible de charger l'instance "<<s_tmp<<endl;
                        s_tmp="";
                        getline(fichier,s_tmp);		// on relie une ligne et on recommence
                     }
