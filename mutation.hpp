@@ -4,7 +4,7 @@
 #include "Instance.hpp"
 #include "Solution.hpp"
 #include "vector_methods.hpp"
-#include <stdio.h>
+
 #include <vector>
 
 using namespace std;

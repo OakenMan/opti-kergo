@@ -3,25 +3,8 @@
 #include <vector>
 #include <stdio.h>
 #include <algorithm>
-
-// int main(int argv, const char * argc[]) {
-//
-//    srand(time(NULL));
-//
-//    // Lecture de l'instance
-//    Instance *instance = new Instance();
-//    if(!instance->chargement_Instance("Data/Inst2.txt")) {
-//       cerr << "Impossible de charger l'instance" << endl;
-//    }
-//
-//    Solution * solution;
-//    for(unsigned int i=0; i<1000; i++) {
-//       solution = generateFeasibleSolution(instance);
-//    }
-//
-//    cout << "success";
-//    solution->print();
-// }
+#include <stdio.h>
+#include <vector>
 
 Solution * generateSolution(Instance *instance) {
    Solution *sol = new Solution();

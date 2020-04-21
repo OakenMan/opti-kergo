@@ -2,6 +2,7 @@
 #define stats_hpp
 
 #include "Solution.hpp"
+
 #include <iostream>
 
 using namespace std;
