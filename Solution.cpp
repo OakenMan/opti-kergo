@@ -286,11 +286,7 @@ void Solution::print() {
    printVector(v_Date_Depart);
    cout << "Score objectif = " << i_valeur_fonction_objectif << endl;
    cout << "Score négatif = " << i_valeur_score_negatif << endl;
-   if (i_valeur_score_negatif > 0)
-   {
-        cout << "Ratio = " << (float)i_valeur_fonction_objectif/(float)i_valeur_score_negatif << endl;
-   }
-   
+   cout << "Ratio = " << (float)(i_valeur_fonction_objectif/(i_valeur_score_negatif+1)) << endl;
 }
 
 //Calcul le retard en tant que pourcentage de la durée max d'une journée et map la valeur obtenu de l'intervalle from = [A, B] à to = [a, b]

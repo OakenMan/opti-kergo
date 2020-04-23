@@ -181,7 +181,7 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
    // cutLength = rand(2, smallestSize-2)
    // cutStart = rand(0, n-cutLength)
    // coupe = [cutStart, cutEnd]
-   unsigned int cutLength  = MIN_CUT_SIZE + rand() % (smallestSize - MAX_CUT_SIZE - MIN_CUT_SIZE + 2);
+   unsigned int cutLength  = MIN_CUT_SIZE + rand() % (smallestSize - MIN_CUT_SIZE);
    unsigned int cutStart   = rand() % (smallestSize - cutLength + 1);
    unsigned int cutEnd     = cutStart + cutLength - 1;
 

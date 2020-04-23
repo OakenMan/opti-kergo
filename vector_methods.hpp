@@ -1,7 +1,6 @@
 #ifndef vector_methods_hpp
 #define vector_methods_hpp
 
-#include <stdio.h>
 #include <vector>
 
 using namespace std;

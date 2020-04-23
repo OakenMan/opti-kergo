@@ -8,10 +8,10 @@ all: $(EXEC)
 test: test.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-exec: main.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o
+exec: main.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o stats.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-main.o: main.cpp Instance.cpp Solution.cpp generation.cpp selection.cpp reproduction.cpp mutation.cpp vector_methods.cpp
+main.o: main.cpp Instance.cpp Solution.cpp generation.cpp selection.cpp reproduction.cpp mutation.cpp vector_methods.cpp stats.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 Instance.o: Instance.cpp
@@ -38,6 +38,9 @@ generation.o: generation.cpp Solution.cpp
 test.o: test.cpp Instance.cpp Solution.cpp vector_methods.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
+stats.o: stats.cpp Solution.cpp
+	$(CC) -o $@ -c $< $(CFLAGS)
+
 clean:
 	rm -f *.o core
 
@@ -47,3 +50,6 @@ mrproper: clean
 # j'ai rajouté un argumenter au valgrind histoire de pouvoir faire make valgrind ARG="..."
 valgrind: $(ARG)
 	valgrind ./$(ARG) -f -tool=memcheck -leak-check=full track-origin=yes
+
+gene: generation.cpp Solution.cpp Instance.cpp vector_methods.cpp
+	$(CC) -o $@ $^ $(CFLAGS)

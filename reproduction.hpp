@@ -4,12 +4,12 @@
 #include "Solution.hpp"
 #include "Instance.hpp"
 #include "vector_methods.hpp"
-#include <stdio.h>
+
 #include <vector>
 
 using namespace std;
 
-const unsigned int MIN_CUT_SIZE = 2;   // Taille min d'une coupe  /!\ Si des jours ont moins de 2 POI, mettre celle ci à 1 sinon crash
+const unsigned int MIN_CUT_SIZE = 1;   // Taille min d'une coupe  /!\ Si des jours ont moins de 2 POI, mettre celle ci à 1 sinon crash
 const unsigned int MAX_CUT_SIZE = 2;   // Nombre de POI en 1 jour - MAX_CUT_SIZE = Taille max d'une coupe (ex: si 8 POI et MAX_CUT_SIZE=2, taille max = 6)
 
 /*

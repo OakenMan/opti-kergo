@@ -74,6 +74,7 @@ vector<unsigned int> randomVector(unsigned int minSize, unsigned int maxSize, un
 vector<unsigned int> linkVectors(vector<vector<unsigned int>> v) {
 
    vector<unsigned int> linked;
+
    for(unsigned int i=0; i<v.size(); i++) {
       for(unsigned int j=0; j<v[i].size(); j++) {
          linked.push_back(v[i][j]);

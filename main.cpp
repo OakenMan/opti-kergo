@@ -3,9 +3,12 @@
 #define NOM_FICHIER_LISTE_SORTIE "sortie.txt"
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <chrono>
 #include <algorithm>
+#include <limits.h>
+
 #include "Instance.hpp"
 #include "Solution.hpp"
 #include "selection.hpp"
@@ -13,35 +16,11 @@
 #include "reproduction.hpp"
 #include "mutation.hpp"
 #include "vector_methods.hpp"
+#include "stats.hpp"
 
 using namespace std;
 
 int Resolution(Instance * instance);
-
-unsigned int bestSolution(vector<Solution*> population, bool onlyfeasible) {
-   unsigned int bestSolution = 0;
-   unsigned int index = 0;
-
-   for(unsigned int i=0; i<population.size(); i++) {
-      if(onlyfeasible) {
-         if(population[i]->i_valeur_fonction_objectif > bestSolution && population[i]->i_valeur_score_negatif == 0) {
-            bestSolution = population[i]->i_valeur_fonction_objectif;
-            index = i;
-         }
-      }
-      else {
-         if(population[i]->i_valeur_fonction_objectif > bestSolution) {
-            bestSolution = population[i]->i_valeur_fonction_objectif;
-            index = i;
-         }
-      }
-   }
-
-   cout << "Meilleur solution = " << endl;
-   population[index]->print();
-
-   return bestSolution;
-}
 
 int main(int argc, const char * argv[])
 {
@@ -71,7 +50,7 @@ int main(int argc, const char * argv[])
                 {
                     Instance * instance = new Instance();
 
-					// création des timers
+					     // Création des timers
                     chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
                     chrono::duration<double> elapsed;
 
@@ -88,70 +67,79 @@ int main(int argc, const char * argv[])
                     if(instance->chargement_Instance(s_chemin)) {	// on charge l'instance du fichier pointé par s_tmp
                       chrono_start = chrono::system_clock::now();
 
-                      /*------------- Et maintenant... l'algo -------------*/
+                      /*------------- Paramètres de l'algo -------------*/
 
-                      srand(time(NULL));
+                      long seed = time(NULL);
+                      srand(seed);
+                      cout << "Seed : " << seed << endl;
+                      cout << fixed << setprecision(2);
 
-                      vector<unsigned int> scores;
+                      const int populationSize = 1000;   // doit être un nombre dont la moitié est paire
 
-                      int nbIter = 10000;
-                      int populationSize = 1000;
+                      // Conditions d'arrêt
+                      bool limitIterations =    false;
+                      bool limitTime =          false;
+                      bool limitAmelioration =  true;
 
-                      bool debug = false;
+                      const int nbIter = 1000;
+                      const double timeLimit = 60.0;              // en secondes
+                      const int maxIterWithoutAmeliorations = 100;
 
-                      vector<Solution*> population = generation(instance, populationSize);
+                      bool finished = false;
 
-                      bestSolution(population, false);
+                      cout << "--------------------------------------------------------" << endl;
 
-                      for(int i=0; i<nbIter; i++) {
+                      /*------------- Algorithme génétique -------------*/
 
-                        scores.push_back(bestSolution(population, false));
+                      vector<Solution*> population = generation(instance, populationSize);   // Génération de la population de base
 
-                        // scores.push_back(bestSolution(population, false));
-                        if(debug) {
-                           cout << "\n========== POPULATION DE BASE ==========" << endl;
-                           printPopulation(population);
-                        }
+                      cout << "=== Population de base ===" << endl;
+                      analyse(population);
+
+                      int iterations = 0;
+                      int iterWithoutAmeliorations = 0;
+
+                      for(iterations=0; !finished; iterations++) {
 
                         vector<Solution*> selection = Selection(population);                 // Selection sur la population
-                        if(debug) {
-                           cout << "\n========== SELECTION ==========" << endl;
-                           printPopulation(selection);
-                        }
-
                         vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-                        if(debug) {
-                           cout << "\n========== ENFANTS ==========" << endl;
-                           printPopulation(children);
-                        }
-
                         mutation(children, instance);                                        // Mutation des enfants
-
-                        if(debug) {
-                           cout << "\n========== MUTATIONS ==========" << endl;
-                           printPopulation(children);
-                        }
-
                         population.clear();
                         population = fusion(selection, children);                            // Ajout des enfants à la population de base
+
+                        // Update du chrono
+                        chrono_end = chrono::system_clock::now();
+                        elapsed=chrono_end-chrono_start;
+
+                        // Update du nombre d'itérations sans améliorations
+                        if(bestSolution(population, true) > i_best_solution_score) {
+                           iterWithoutAmeliorations = 0;
+                        }
+                        else {
+                           iterWithoutAmeliorations++;
+                        }
+
+                        // Conditions d'arrêt
+                        if(limitIterations && iterations >= nbIter-1)
+                           finished = true;
+                        if(limitTime && elapsed.count() >= timeLimit)
+                           finished = true;
+                        if(limitAmelioration && iterWithoutAmeliorations >= maxIterWithoutAmeliorations)
+                           finished = true;
+
+                        i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
                       }
 
-                      if(debug) {
-                        cout << "\n========== POPULATION FINALE ==========" << endl;
-                        printPopulation(population);
-                      }
+                      cout << "\n=== Population finale ===" << endl;
+                      analyse(population);
 
-                      i_best_solution_score = bestSolution(population, false);
+                      deletePopulation(population);   // On supprime la population finale à la fin de l'algo
 
                       /*---------------------------------------------------*/
 
-                      chrono_end = chrono::system_clock::now();
-
-                      elapsed=chrono_end-chrono_start;
-
-                      printVector(scores);
-
-                      cout<< "Fin de résolution de [" << s_tmp << "] en " << elapsed.count() << "s. Best = " << i_best_solution_score << endl;
+                      cout << "--------------------------------------------------------" << endl;
+                      cout << "Fin de résolution de [" << s_tmp << "] en " << elapsed.count() << "s/" << iterations << " itérations" << endl;
+                      cout << "Best solution (réalisable) : " << i_best_solution_score << endl;
 
                       // écriture sur le fichier de sortie
                       fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
@@ -159,9 +147,10 @@ int main(int argc, const char * argv[])
                       s_tmp="";
                       getline(fichier,s_tmp);		// on relie une ligne et on recommence
                       delete instance;
+
                     }
                     else {
-                       cout<<"Erreur impossible "<<endl;
+                       cout<<"Erreur : impossible de charger l'instance "<<s_tmp<<endl;
                        s_tmp="";
                        getline(fichier,s_tmp);		// on relie une ligne et on recommence
                     }
