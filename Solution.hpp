@@ -30,4 +30,6 @@ class Solution
 
 unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet, float heure_limite, int fromA, int fromB, int toa, int tob);
 
+void printPopulation(vector<Solution*> population);
+
 #endif

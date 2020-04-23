@@ -10,13 +10,10 @@ using namespace std;
  * Affiche un vecteur d'unsigned int sous cette forme : "[ x y z ] (n=taille) \n"
  */
 void printVector(vector<unsigned int> &v);
-<<<<<<< HEAD
-=======
 
 /*
  * Affiche un vecteur de floats sous cette forme : "[ x y z ] (n=taille) \n"
  */
->>>>>>> aa27f057fd5ad175df71033c96b22c737d547c13
 void printVector(vector<float> &v);
 
 /*

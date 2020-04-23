@@ -9,6 +9,8 @@
 #include "Instance.hpp"
 #include "Solution.hpp"
 #include "vector_methods.hpp"
+#include "generation.hpp"
+#include "selection.hpp"
 
 using namespace std;
 
@@ -30,6 +32,7 @@ int main(int argc, const char * argv[])
     	solutions[i]->print();
     	cout << endl;
     }
+    solutions.push_back(mock_solution(instance));
     // //CALCULER SCORE : VALIDE
     // cout << "on test la fonction de calcul du score de retard" << endl;
     // calculer_score_retard(45, 20, 19, 0, 30, 1, 5);
@@ -38,27 +41,36 @@ int main(int argc, const char * argv[])
     // calculer_score_retard(45, 40, 19, 0, 30, 1, 5);
     // calculer_score_retard(45, 44, 19, 0, 30, 1, 5);
 
-    //FONCTION VECTORS :
-    cout << "Indice de la solution ayant le score objectif max : " << indice_score_objectif_max(&solutions) << endl;
-    cout << "Indice de la solution ayant le ratio score obj. / score neg. max : " << indice_ratio_obj_neg_max(&solutions) << endl;
-    cout << "On trie le tableau de solutions ayant un score neg" << endl;
-    trier_tableau_par_ratio_objectif_negatif(&solutions);
-    cout << "nouveau tableau : " << endl;
-    for (unsigned int i = 0; i < 3; i++)
-    {
-    	cout << "*** Solution " << i << "***" << endl;
-    	solutions[i]->print();
-    	cout << endl;
-    }
-    cout << "on mélange" << endl;
-    melange_tableau(&solutions);
-    cout << "nouveau tableau : " << endl;
-    for (unsigned int i = 0; i < 3; i++)
-    {
-    	cout << "*** Solution " << i << "***" << endl;
-    	solutions[i]->print();
-    	cout << endl;
-    }
+    //FONCTION VECTORS : VALIDE
+    // cout << "Indice de la solution ayant le score objectif max : " << indice_score_objectif_max(&solutions) << endl;
+    // cout << "Indice de la solution ayant le ratio score obj. / score neg. max : " << indice_ratio_obj_neg_max(&solutions) << endl;
+    // cout << "On trie le tableau de solutions ayant un score neg" << endl;
+    // trier_tableau_par_ratio_objectif_negatif(&solutions);
+    // cout << "nouveau tableau : " << endl;
+    // for (unsigned int i = 0; i < 3; i++)
+    // {
+    // 	cout << "*** Solution " << i << "***" << endl;
+    // 	solutions[i]->print();
+    // 	cout << endl;
+    // }
+    // cout << "on mélange" << endl;
+    // melange_tableau(&solutions);
+    // cout << "nouveau tableau : " << endl;
+    // for (unsigned int i = 0; i < 3; i++)
+    // {
+    // 	cout << "*** Solution " << i << "***" << endl;
+    // 	solutions[i]->print();
+    // 	cout << endl;
+    // }
+
+    //SELECTION : VALIDE
+    // std::vector<Solution*> survivants = Selection(solutions);
+    // for (unsigned int i = 0; i < survivants.size(); i++)
+    // {
+    // 	cout << "*** Solution " << i << "***" << endl;
+    // 	survivants[i]->print();
+    // 	cout << endl;
+    // }
 }
 
 Instance* charger_instance()
