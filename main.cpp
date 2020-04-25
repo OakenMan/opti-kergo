@@ -17,6 +17,7 @@
 #include "mutation.hpp"
 #include "vector_methods.hpp"
 #include "stats.hpp"
+#include "settings.hpp"
 
 using namespace std;
 
@@ -24,6 +25,9 @@ int Resolution(Instance * instance);
 
 int main(int argc, const char * argv[])
 {
+   Settings s = parseArgv(argc, argv);
+   s.print();
+
     try
     {
         string s_tmp;
@@ -69,35 +73,22 @@ int main(int argc, const char * argv[])
 
                       /*------------- Paramètres de l'algo -------------*/
 
-                      long seed = time(NULL);
-                      srand(seed);
-                      cout << "Seed : " << seed << endl;
+                      srand(s.seed);
+
                       cout << fixed << setprecision(2);
-
-                      const int populationSize = 1000;   // doit être un nombre dont la moitié est paire
-
-                      // Conditions d'arrêt
-                      bool limitIterations =    false;
-                      bool limitTime =          false;
-                      bool limitAmelioration =  true;
-
-                      const int nbIter = 1000;
-                      const double timeLimit = 60.0;              // en secondes
-                      const int maxIterWithoutAmeliorations = 100;
-
-                      bool finished = false;
 
                       cout << "--------------------------------------------------------" << endl;
 
                       /*------------- Algorithme génétique -------------*/
 
-                      vector<Solution*> population = generation(instance, populationSize);   // Génération de la population de base
+                      vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base
 
                       cout << "=== Population de base ===" << endl;
                       analyse(population);
 
                       int iterations = 0;
                       int iterWithoutAmeliorations = 0;
+                      bool finished = false;
 
                       for(iterations=0; !finished; iterations++) {
 
@@ -120,11 +111,11 @@ int main(int argc, const char * argv[])
                         }
 
                         // Conditions d'arrêt
-                        if(limitIterations && iterations >= nbIter-1)
+                        if(s.cond_arret == "iterations" && iterations >= s.maxIter-1)
                            finished = true;
-                        if(limitTime && elapsed.count() >= timeLimit)
+                        if(s.cond_arret == "time" && elapsed.count() >= s.maxTime)
                            finished = true;
-                        if(limitAmelioration && iterWithoutAmeliorations >= maxIterWithoutAmeliorations)
+                        if(s.cond_arret == "ameliorations" && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
                            finished = true;
 
                         i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score

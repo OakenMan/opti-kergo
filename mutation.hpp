@@ -11,7 +11,7 @@ using namespace std;
 
 // Probabilités de mutation, en %
 const float PROBA_MUT_HOTEL = 1;
-const float PROBA_MUT_POI = 5;
+const float PROBA_MUT_POI = 50;
 const float PROBA_MUT_DATE = 5;
 
 // Changement max (positif ou négatif) de la date en une mutation
