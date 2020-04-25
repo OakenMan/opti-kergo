@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <set>
 #include <cmath>
+#include "vector_methods.hpp"
 
 Solution::Solution()
 {

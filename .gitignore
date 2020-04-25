@@ -2,6 +2,7 @@ sortie.txt
 Data/sortie.txt
 Datasortie.txt
 valgrind
+exec
 
 # Prerequisites
 *.d
