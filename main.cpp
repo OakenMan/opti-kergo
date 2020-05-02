@@ -25,8 +25,9 @@ int Resolution(Instance * instance);
 
 int main(int argc, const char * argv[])
 {
-   Settings s = parseArgv(argc, argv);
-   s.print();
+   Settings s;
+   s.parseArgv(argc, argv);
+   s.printSettings();
 
     try
     {
@@ -115,21 +116,12 @@ int main(int argc, const char * argv[])
                         }
 
                         // Conditions d'arrêt
-                        if(s.cond_arret == "iterations" && iterations >= s.maxIter-1)
-                        { 
-                           finished = true; 
-                           cout << "iteration max" << endl;
-                        }
-                        if(s.cond_arret == "time" && elapsed.count() >= s.maxTime)
-                        {
-                           finished = true; 
-                           cout << "temps ecoule" << endl;
-                        }
-                        if(s.cond_arret == "ameliorations" && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
-                        {
-                           finished = true; 
-                           cout << "plus d'améliorations" << endl;
-                        }
+                        if(s.condIter && iterations >= s.maxIter-1)
+                           finished = true;
+                        if(s.condTime && elapsed.count() >= s.maxTime)
+                           finished = true;
+                        if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
+                           finished = true;
 
                         i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
                       }

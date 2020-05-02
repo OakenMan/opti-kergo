@@ -96,13 +96,13 @@ void muter_Sequence_POI(Solution *solution, unsigned int nbPOI) {
    }
 }
 
-void muter_Date_Depart(Solution *solution, float dateMax) {
+void muter_Date_Depart(Solution *solution, float dateMax, Settings *settings) {
 
    // On choisit un jour à muter
    unsigned int day = rand() % solution->v_Date_Depart.size();
 
-   float minChange = min(solution->v_Date_Depart[day], float(MAX_CHANGE_ON_DATE));
-   float maxChange = min(float(0.01) + dateMax - solution->v_Date_Depart[day], float(MAX_CHANGE_ON_DATE));
+   float minChange = min(solution->v_Date_Depart[day], float(settings->MAX_CHANGE_ON_DATE));
+   float maxChange = min(float(0.01) + dateMax - solution->v_Date_Depart[day], float(settings->MAX_CHANGE_ON_DATE));
    cout.flush();
    float change = -minChange + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/maxChange));
 
@@ -114,21 +114,21 @@ void muter_Date_Depart(Solution *solution, float dateMax) {
 /*
  * Fait muter une solution
  */
-void mutate(Solution *solution, Instance *instance) {
+void mutate(Solution *solution, Instance *instance, Settings *settings) {
 
    // génère un float entre 0 et 100
-   if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < PROBA_MUT_HOTEL) {
+   if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < settings->PROBA_MUT_HOTEL) {
       muter_Hotels_Intermediares(solution, instance->get_Nombre_Hotel());
       // cout << "Mutation sur les hôtels !" << endl;
    }
 
-   if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < PROBA_MUT_POI) {
+   if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < settings->PROBA_MUT_POI) {
       muter_Sequence_POI(solution, instance->get_Nombre_POI());
       // cout << "Mutation sur les POI !" << endl;
    }
 
-   if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < PROBA_MUT_DATE) {
-      muter_Date_Depart(solution, 75.0); // <---- récupérer la date max depuis l'instance
+   if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < settings->PROBA_MUT_DATE) {
+      muter_Date_Depart(solution, instance->get_Duree_Max_Jour(), settings); // <---- récupérer la date max depuis l'instance
       // cout << "Mutation sur les dates !" << endl;
    }
 
@@ -137,10 +137,10 @@ void mutate(Solution *solution, Instance *instance) {
 /*
  * Effectue des mutations sur une population
  */
-void mutation(vector<Solution*> population, Instance *instance) {
+void mutation(vector<Solution*> population, Instance *instance, Settings *settings) {
 
    for(unsigned int i=0; i<population.size(); i++) {
-      mutate(population[i], instance);
+      mutate(population[i], instance, settings);
    }
 
 }

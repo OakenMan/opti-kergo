@@ -9,40 +9,43 @@
 
 using namespace std;
 
-class Settings {
+class Settings
+{
    public:
-      long seed = time(NULL);
+      long seed;
 
-      int populationSize = 1000;
+      int populationSize;
 
-      int maxIter = 1000;
-      double maxTime = 60.0;
-      int maxIterWithoutAmeliorations = 100;
+      int maxIter;
+      double maxTime;
+      int maxIterWithoutAmeliorations;
 
-      string cond_arret = "ameliorations";
+      bool condIter;
+      bool condTime;
+      bool condAmel;
 
-      unsigned int MIN_CUT_SIZE = 1;   // Taille min d'une coupe  /!\ Si des jours ont moins de 2 POI, mettre celle ci à 1 sinon crash
-      unsigned int MAX_CUT_SIZE = 2;   // Nombre de POI en 1 jour - MAX_CUT_SIZE = Taille max d'une coupe (ex: si 8 POI et MAX_CUT_SIZE=2, taille max = 6)
+      unsigned int MIN_CUT_SIZE;   // Taille min d'une coupe  /!\ Si des jours ont moins de 2 POI, mettre celle ci à 1 sinon crash
+      unsigned int MAX_CUT_SIZE;   // Nombre de POI en 1 jour - MAX_CUT_SIZE = Taille max d'une coupe (ex: si 8 POI et MAX_CUT_SIZE=2, taille max = 6)
 
       // Probabilités de mutation, en %
-      float PROBA_MUT_HOTEL = 1;
-      float PROBA_MUT_POI = 50;
-      float PROBA_MUT_DATE = 5;
+      float PROBA_MUT_HOTEL;
+      float PROBA_MUT_POI;
+      float PROBA_MUT_DATE;
 
       // Changement max (positif ou négatif) de la date en une mutation
-      float MAX_CHANGE_ON_DATE = 5.0;
+      float MAX_CHANGE_ON_DATE;
 
    public:
-    /* Constructeurs et destructeur  */
-        Settings();
-        virtual ~Settings();
+   /* Constructeurs et destructeur  */
+       Settings();
+       virtual ~Settings();
 
-        void print();
-        void generateRandomSettings();
+       void generateRandomSettings();
+       void printSettings();
+
+       void parseArgv(int argc, const char * argv[]);
 
 };
-
-Settings parseArgv(int argc, const char * argv[]);
 
 void displayHelp();
 
