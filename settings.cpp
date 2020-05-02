@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <cstdlib>
 
 Settings::Settings()
 {
@@ -23,6 +24,19 @@ void Settings::print() {
    cout << "Proba. mutation poi = " << this->PROBA_MUT_POI << endl;
    cout << "Proba. mutation dates = " << this->PROBA_MUT_DATE << endl;
    cout << "--------------------------------------------------------" << endl;
+}
+
+void Settings::generateRandomSettings()
+{
+   srand(time(NULL));
+
+   populationSize = (rand() % (1250 - 125 + 1) + 125) * 4; //Un nombre entre 500 et 5 000, pair, dont la moitié est pair
+
+   PROBA_MUT_HOTEL = rand () % (75) + 1;
+   PROBA_MUT_POI = rand () % (75) + 1;
+   PROBA_MUT_DATE = rand () % (75) + 1;
+
+   MAX_CHANGE_ON_DATE = rand () % (10) + 1;
 }
 
 Settings parseArgv(int argc, const char * argv[]) {

@@ -267,10 +267,6 @@ void Solution::Evaluation_Solution(Instance * instance)
             }
         }
     }
-
-    if(i_valeur_score_negatif == 0) {
-      // cout << "OH PUTAIN ELLE EST FAISABLE !!! AVEC UN SCORE DE " << i_valeur_fonction_objectif << endl;
-    }
 }
 
 void Solution::print() {

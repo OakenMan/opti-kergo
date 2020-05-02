@@ -5,7 +5,7 @@ EXEC=exec
 
 all: $(EXEC)
 
-test: test.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o
+find_parameters: find_parameters.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o stats.o settings.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 exec: main.o Instance.o Solution.o generation.o selection.o reproduction.o mutation.o vector_methods.o stats.o settings.o
@@ -35,7 +35,7 @@ mutation.o: mutation.cpp Solution.cpp Instance.cpp vector_methods.cpp
 generation.o: generation.cpp Solution.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-test.o: test.cpp Instance.cpp Solution.cpp vector_methods.cpp
+find_parameters.o: find_parameters.cpp Instance.cpp Solution.cpp generation.cpp selection.cpp reproduction.cpp mutation.cpp vector_methods.cpp stats.cpp settings.cpp
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 stats.o: stats.cpp Solution.cpp

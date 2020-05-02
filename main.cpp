@@ -92,9 +92,13 @@ int main(int argc, const char * argv[])
 
                       for(iterations=0; !finished; iterations++) {
 
+                        cout << "avant selection" << endl;
                         vector<Solution*> selection = Selection(population);                 // Selection sur la population
+                        cout << "apres selection" << endl;
                         vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
+                        cout << "apres repro" << endl;
                         mutation(children, instance);                                        // Mutation des enfants
+
                         population.clear();
                         population = fusion(selection, children);                            // Ajout des enfants à la population de base
 
@@ -112,11 +116,20 @@ int main(int argc, const char * argv[])
 
                         // Conditions d'arrêt
                         if(s.cond_arret == "iterations" && iterations >= s.maxIter-1)
-                           finished = true;
+                        { 
+                           finished = true; 
+                           cout << "iteration max" << endl;
+                        }
                         if(s.cond_arret == "time" && elapsed.count() >= s.maxTime)
-                           finished = true;
+                        {
+                           finished = true; 
+                           cout << "temps ecoule" << endl;
+                        }
                         if(s.cond_arret == "ameliorations" && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
-                           finished = true;
+                        {
+                           finished = true; 
+                           cout << "plus d'améliorations" << endl;
+                        }
 
                         i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
                       }

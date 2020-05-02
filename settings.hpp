@@ -38,12 +38,12 @@ class Settings {
         virtual ~Settings();
 
         void print();
+        void generateRandomSettings();
 
 };
 
 Settings parseArgv(int argc, const char * argv[]);
 
 void displayHelp();
-
 
 #endif
