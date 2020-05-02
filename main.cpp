@@ -21,179 +21,178 @@
 
 using namespace std;
 
-int Resolution(Instance * instance);
+int Resolution(Instance * instance, Settings s);
 
 int main(int argc, const char * argv[])
 {
-   Settings s;
-   s.parseArgv(argc, argv);
-   s.printSettings();
+   /*---------- Création de la classe de paramètres ------------------------------------*/
+   Settings s;               // Cette action est réalisée une seule fois au début
+   s.parseArgv(argc, argv);  // du programme pour que toutes les instances soient
+   s.print();                // résolues avec les mêmes paramètres (voir 'settings.hpp')
+   /*-----------------------------------------------------------------------------------*/
 
-    try
-    {
-        string s_tmp;
-        string s_chemin=CHEMIN_DOSSIER_DONNEES;					// s_chemin = ".../opti-kergo/Data/"
-        s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);		// s_chemin = ".../opti-kergo/Data/data.txt"
+   try
+   {
+      string s_tmp;
+      string s_chemin=CHEMIN_DOSSIER_DONNEES;					// s_chemin = ".../opti-kergo/Data/"
+      s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);		// s_chemin = ".../opti-kergo/Data/data.txt"
 
-        ifstream fichier(s_chemin.c_str(), std::ios::in);		// fichier = fichier data.txt
+      ifstream fichier(s_chemin.c_str(), std::ios::in);		// fichier = fichier data.txt
 
-		std::ofstream fichier_Sortie_Resume;					
+		std::ofstream fichier_Sortie_Resume;
 
-        s_chemin=CHEMIN_DOSSIER_DONNEES;						// s_chemin = ".../opti-kergo/"
-        s_chemin.append(NOM_FICHIER_LISTE_SORTIE);				//s_chemin = ".../opti-kergo/sortie.txt"
-        ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);	// fichier_Sortie = sortie.txt
+      s_chemin=CHEMIN_DOSSIER_DONNEES;						// s_chemin = ".../opti-kergo/"
+      s_chemin.append(NOM_FICHIER_LISTE_SORTIE);				//s_chemin = ".../opti-kergo/sortie.txt"
+      ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);	// fichier_Sortie = sortie.txt
 
-        if(fichier)
-        {
-            if(fichier_Sortie)
+      if(fichier)
+      {
+         if(fichier_Sortie)
+         {
+            fichier_Sortie<<"Fichier données\t\tTps de résolution \tBest solution"<<endl;
+
+            getline(fichier,s_tmp);		// on récupère une ligne du fichier dans s_tmp
+
+            while(s_tmp!="")
             {
-                fichier_Sortie<<"Fichier données\t\tTps de résolution \tBest solution"<<endl;
+               Instance * instance = new Instance();
 
-                getline(fichier,s_tmp);		// on récupère une ligne du fichier dans s_tmp
+					// Création des timers
+               chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
+               chrono::duration<double> elapsed;
 
-                while(s_tmp!="")
-                {
-                    Instance * instance = new Instance();
+               unsigned int i_best_solution_score=0;
 
-					     // Création des timers
-                    chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
-                    chrono::duration<double> elapsed;
+               s_chemin=CHEMIN_DOSSIER_DONNEES;
 
-                    unsigned int i_best_solution_score=0;
+               cout<< "Résolution de "<<s_tmp<<endl;
 
-                    s_chemin=CHEMIN_DOSSIER_DONNEES;
+               s_chemin.append(s_tmp);
+               s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\r'), s_chemin.end());
+               s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\n'), s_chemin.end());
 
-                    cout<< "Résolution de "<<s_tmp<<endl;
+               if(instance->chargement_Instance(s_chemin)) {	// on charge l'instance du fichier pointé par s_tmp
+                  chrono_start = chrono::system_clock::now();
 
-                    s_chemin.append(s_tmp);
-                    s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\r'), s_chemin.end());
-                    s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\n'), s_chemin.end());
+                  i_best_solution_score = Resolution(instance, s);
 
-                    if(instance->chargement_Instance(s_chemin)) {	// on charge l'instance du fichier pointé par s_tmp
-                      chrono_start = chrono::system_clock::now();
+                  chrono_end = chrono::system_clock::now();
+                  elapsed = chrono_end - chrono_start;
 
-                      /*------------- Paramètres de l'algo -------------*/
+                  // écriture sur le fichier de sortie
+                  fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
 
-                      srand(s.seed);
+                  s_tmp="";
+                  getline(fichier,s_tmp);		// on relie une ligne et on recommence
+                  delete instance;
 
-                      cout << fixed << setprecision(2);
-
-                      /*------------- Algorithme génétique -------------*/
-
-                      vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base
-
-                      if(s.debug >= 1) {
-                         cout << "--------------------------------------------------------" << endl;
-                         cout << "=== Population de base ===" << endl;
-                         analyse(population);
-                      }
-
-                      int iterations = 0;
-                      int iterWithoutAmeliorations = 0;
-                      bool finished = false;
-
-                      for(iterations=0; !finished; iterations++) {
-
-                        vector<Solution*> selection = Selection(population);                 // Selection sur la population
-                        vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-                        mutation(children, instance, &s);                                    // Mutation des enfants
-                        population.clear();
-                        population = fusion(selection, children);                            // Ajout des enfants à la population de base
-
-                        // Update du chrono
-                        chrono_end = chrono::system_clock::now();
-                        elapsed=chrono_end-chrono_start;
-
-                        // Update du nombre d'itérations sans améliorations
-                        if(bestSolution(population, true) > i_best_solution_score) {
-                           iterWithoutAmeliorations = 0;
-                        }
-                        else {
-                           iterWithoutAmeliorations++;
-                        }
-
-                        // Conditions d'arrêt
-                        if(s.condIter && iterations >= s.maxIter-1)
-                           finished = true;
-                        if(s.condTime && elapsed.count() >= s.maxTime)
-                           finished = true;
-                        if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
-                           finished = true;
-
-                        i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
-                      }
-
-                      if(s.debug >= 1) {
-                         cout << "\n=== Population finale ===" << endl;
-                         analyse(population);
-                         cout << "--------------------------------------------------------" << endl;
-                      }
-
-                      deletePopulation(population);   // On supprime la population finale à la fin de l'algo
-
-                      /*---------------------------------------------------*/
-
-                      cout << "Fin de résolution de [" << s_tmp << "] en " << elapsed.count() << "s/" << iterations << " itérations" << endl;
-                      cout << "Best solution (réalisable) : " << i_best_solution_score << endl;
-                      cout << "--------------------------------------------------------" << endl;
-
-                      // écriture sur le fichier de sortie
-                      fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
-
-                      s_tmp="";
-                      getline(fichier,s_tmp);		// on relie une ligne et on recommence
-                      delete instance;
-
-                    }
-                    else {
-                       cout<<"Erreur : impossible de charger l'instance "<<s_tmp<<endl;
-                       s_tmp="";
-                       getline(fichier,s_tmp);		// on relie une ligne et on recommence
-                    }
-                }
-                fichier_Sortie.close();
+               }
+               else {
+                  cout<<"Erreur : impossible de charger l'instance "<<s_tmp<<endl;
+                  s_tmp="";
+                  getline(fichier,s_tmp);		// on relie une ligne et on recommence
+               }
             }
-            else
-            {
-                cout<<" Erreur lecture des données : chemin vers la sortie non valide. "<<endl;
-            }
-            fichier.close();
-        }
-        else
-        {
-            cout<<" Erreur lecture des données : chemin listant l'ensemble des données non valide. "<<endl;
-        }
+            fichier_Sortie.close();
+         }
+         else
+         {
+             cout<<" Erreur lecture des données : chemin vers la sortie non valide. "<<endl;
+         }
+         fichier.close();
+       }
+       else
+       {
+          cout<<" Erreur lecture des données : chemin listant l'ensemble des données non valide. "<<endl;
+       }
     }
-
     catch(string err)
     {
-        cout << "Erreur fatale : " <<endl;
-        cout << err <<endl;
+        cout << "Erreur fatale : " << err << endl;
     }
     return 0;
 }
 
-int Resolution(Instance * instance)
+int Resolution(Instance * instance, Settings s)
 {
-    unsigned int i_val_Retour_Fct_obj=0;
-    Solution * uneSolution = new Solution();
-    vector<unsigned int> v_i_tmp ;
+   /*------------- Paramètres de l'algo -------------*/
+   srand(s.seed);
+   cout << fixed << setprecision(2);   // Limitation de l'affichage à 2 chiffres après la virgule
 
-/*INITIALISATION D'UN SOLUTION EN DUR*/
-    v_i_tmp.clear();
-    uneSolution->v_Id_Hotel_Intermedaire.push_back(2);
-    uneSolution->v_Date_Depart.push_back(0.0);
-    uneSolution->v_Date_Depart.push_back(0.0);
-    v_i_tmp ={0, 2, 5, 9, 14, 21, 28, 20, 27, 35, 42, 36, 29, 22, 30, 31};
-    uneSolution->v_v_Sequence_Id_Par_Jour.push_back(v_i_tmp);
-    v_i_tmp ={24, 32, 40, 33, 25, 19, 26, 34, 41, 47, 52, 56, 59, 61};
-    uneSolution->v_v_Sequence_Id_Par_Jour.push_back(v_i_tmp);
-    uneSolution->i_valeur_fonction_objectif=816;
-/* */
+   /*------------------ Variables -------------------*/
+   // Timers (pour vérifier la condition d'arrêt en fonction du temps)
+   chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
+   chrono::duration<double> elapsed;
 
-    uneSolution->Verification_Solution(instance);
+   int iterations = 0;                    // Nombre d'itérations effectuées
+   int iterWithoutAmeliorations = 0;      // Nombre d'itérations sans améliorations effectuées
+   bool finished = false;                 // Boolean pour arrêter l'algorithme
 
-    i_val_Retour_Fct_obj=uneSolution->i_valeur_fonction_objectif;
-    delete uneSolution;
-    return i_val_Retour_Fct_obj;
+   unsigned int bestScore = 0;         // Score de la meilleure solution
+
+   /*------------- Algorithme génétique -------------*/
+
+   chrono_start = chrono::system_clock::now();
+
+   vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base
+
+   if(s.debug >= 1) {
+      cout << "--------------------------------------------------------" << endl;
+      cout << "=== Population de base ===" << endl;
+      analyse(population);
+   }
+
+   for(iterations=0; !finished; iterations++) {
+
+      vector<Solution*> selection = Selection(population);                 // Selection sur la population
+      vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
+      mutation(children, instance, &s);                                    // Mutation des enfants
+      population.clear();
+      population = fusion(selection, children);                            // Ajout des enfants à la population de base
+
+      // Mise à jour du chrono
+      chrono_end = chrono::system_clock::now();
+      elapsed = chrono_end - chrono_start;
+
+      // Mise à jour du nombre d'itérations sans améliorations
+      if(getBestScore(population, true) > bestScore) {
+          iterWithoutAmeliorations = 0;
+      }
+      else {
+          iterWithoutAmeliorations++;
+      }
+
+      // Conditions d'arrêt
+      if(s.condIter && iterations >= s.maxIter-1)                                   // Si on a dépassé le nombre max d'itérations
+          finished = true;
+      if(s.condTime && elapsed.count() >= s.maxTime)                                // Si on a dépassé la limite de temps
+          finished = true;
+      if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)   // Si on dépassé le nombre max d'itérations sans améliorations
+          finished = true;
+
+      // Mise à jour du meilleur score
+      bestScore = getBestScore(population, true);
+
+      // cout << "it=" << iterations << ", best=" << bestScore << endl;
+   }
+
+   if(s.debug >= 1) {
+      cout << "\n=== Population finale ===" << endl;
+      analyse(population);
+      cout << "--------------------------------------------------------" << endl;
+   }
+
+   Solution * bestSolution = getBestSolution(population);
+
+   bestSolution->print();
+
+   bestSolution->Verification_Solution(instance);
+
+   deletePopulation(population);   // On supprime de la mémoire la population finale à la fin de l'algo
+
+   cout << "Fin de résolution en " << elapsed.count() << "s/" << iterations << " itérations" << endl;
+   cout << "Meilleure solution : " << bestScore << endl;
+   cout << "--------------------------------------------------------" << endl;
+
+   return bestSolution->i_valeur_fonction_objectif;
 }

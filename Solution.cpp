@@ -170,6 +170,9 @@ void Solution::Evaluation_Solution(Instance * instance)
     set<unsigned int> set_POIs_Visites; //Liste de tout les POIs parcourus (éviter les doublons)
     float f_date;
 
+    i_valeur_fonction_objectif = 0;
+    i_valeur_score_negatif = 0;
+
     //Vérification des Ids POIs
     for(i=0;i<v_v_Sequence_Id_Par_Jour.size();i++)
     {
@@ -266,10 +269,6 @@ void Solution::Evaluation_Solution(Instance * instance)
                 i_valeur_score_negatif += calculer_score_retard(instance->get_Duree_Max_Jour(), f_date-v_Date_Depart[i], instance->get_POI_Duree_Max_Voyage(i), 0, 30, 1, 5);
             }
         }
-    }
-
-    if(i_valeur_score_negatif == 0) {
-      // cout << "OH PUTAIN ELLE EST FAISABLE !!! AVEC UN SCORE DE " << i_valeur_fonction_objectif << endl;
     }
 }
 

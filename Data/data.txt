@@ -1,3 +1,1 @@
 Inst1.txt
-Inst2.txt
-Inst3.txt

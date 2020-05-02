@@ -9,7 +9,9 @@ using namespace std;
 
 const bool DEBUG = false;
 
-unsigned int bestSolution(vector<Solution*> population, bool onlyFeasible);
+unsigned int getBestScore(vector<Solution*> population, bool onlyFeasible);
+
+Solution * getBestSolution(vector<Solution*> population);
 
 float bestRatio(vector<Solution*> population);
 

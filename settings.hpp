@@ -42,7 +42,8 @@ class Settings
        Settings();
        virtual ~Settings();
 
-       void printSettings();
+       void generateRandomSettings();
+       void print();
 
        void parseArgv(int argc, const char * argv[]);
 

@@ -1,6 +1,6 @@
 #include "stats.hpp"
 
-unsigned int bestSolution(vector<Solution*> population, bool onlyFeasible) {
+unsigned int getBestScore(vector<Solution*> population, bool onlyFeasible) {
    unsigned int bestSolution = 0;
    unsigned int index = 0;
 
@@ -21,6 +21,19 @@ unsigned int bestSolution(vector<Solution*> population, bool onlyFeasible) {
 
    if(DEBUG) {
       population[index]->print();
+   }
+
+   return bestSolution;
+}
+
+Solution * getBestSolution(vector<Solution*> population) {
+   Solution * bestSolution = new Solution();
+   bestSolution->i_valeur_fonction_objectif = 0;
+
+   for(unsigned int i=0; i<population.size(); i++) {
+      if(population[i]->i_valeur_fonction_objectif > bestSolution->i_valeur_fonction_objectif && population[i]->i_valeur_score_negatif == 0) {
+         bestSolution = population[i];
+      }
    }
 
    return bestSolution;
@@ -94,8 +107,8 @@ vector<unsigned int> diversity(vector<Solution*> population) {
 void analyse(vector<Solution*> population) {
    cout << "Taille de la population : " << population.size() << endl;
    cout << "Meilleurs solution / Moyennes " << endl;
-   cout << "   Toutes      : " << bestSolution(population, false) << "\t| " << averageScore(population, false) << endl;
-   cout << "   Réalisables : " << bestSolution(population, true) << "\t| " << averageScore(population, true) << endl;
+   cout << "   Toutes      : " << getBestScore(population, false) << "\t| " << averageScore(population, false) << endl;
+   cout << "   Réalisables : " << getBestScore(population, true) << "\t| " << averageScore(population, true) << endl;
    cout << "Meilleur ratio : " << bestRatio(population) << endl;
    cout << "Ratio moyen    : " << averageRatio(population) << endl;
    cout << "Diversité (non-réalisables/réalisables) : ";

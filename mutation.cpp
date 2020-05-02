@@ -119,16 +119,19 @@ void mutate(Solution *solution, Instance *instance, Settings *settings) {
    // génère un float entre 0 et 100
    if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < settings->PROBA_MUT_HOTEL) {
       muter_Hotels_Intermediares(solution, instance->get_Nombre_Hotel());
+      solution->Evaluation_Solution(instance);
       // cout << "Mutation sur les hôtels !" << endl;
    }
 
    if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < settings->PROBA_MUT_POI) {
       muter_Sequence_POI(solution, instance->get_Nombre_POI());
+      solution->Evaluation_Solution(instance);
       // cout << "Mutation sur les POI !" << endl;
    }
 
    if(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100)) < settings->PROBA_MUT_DATE) {
-      muter_Date_Depart(solution, instance->get_Duree_Max_Jour(), settings); // <---- récupérer la date max depuis l'instance
+      muter_Date_Depart(solution, instance->get_Duree_Max_Jour(), settings);
+      solution->Evaluation_Solution(instance);
       // cout << "Mutation sur les dates !" << endl;
    }
 

@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <cstdlib>
 
 Settings::Settings() {
    debug = 0;
@@ -31,7 +32,7 @@ Settings::~Settings() {
 
 }
 
-void Settings::printSettings() {
+void Settings::print() {
    cout << "----- Paramètres ---------------------------------------" << endl;
    cout << "Debug = " << debug << endl;
    cout << "Seed = " << seed << endl;
@@ -54,20 +55,17 @@ void Settings::printSettings() {
    cout << "--------------------------------------------------------" << endl;
 }
 
-void displayHelp() {
-   cout << "Options : " << endl;
-   cout << "-seed [int] \t\t\t\t Généré au hasard si non-précisé" << endl;
-   cout << endl;
-   cout << "-pop-size [int] \t\t\t Nombre dont la moitié est paire" << endl;
-   cout << endl;
-   cout << "-stop [iterations|time|ameliorations] \t Condition d'arrêt" << endl;
-   cout << "-max-iter [int] \t\t\t Nombre max d'itérations" << endl;
-   cout << "-max-time [float] \t\t\t Durée maximale d'exécution" << endl;
-   cout << "-max-iterWA [int] \t\t\t Nombre max d'itérations sans amélioration" << endl;
-   cout << endl;
-   cout << "-p-mut-hotel [float] \t\t\t Pourcentage entre 0 et 100" << endl;
-   cout << "-p-mut-poi [float] \t\t\t Pourcentage entre 0 et 100" << endl;
-   cout << "-p-mut-date [float] \t\t\t Pourcentage entre 0 et 100" << endl;
+void Settings::generateRandomSettings()
+{
+   srand(time(NULL));
+
+   populationSize = 1000; //(rand() % (1250 - 125 + 1) + 125) * 4; //Un nombre entre 500 et 5 000, pair, dont la moitié est pair
+
+   PROBA_MUT_HOTEL = rand () % (75) + 1;
+   PROBA_MUT_POI = rand () % (75) + 1;
+   PROBA_MUT_DATE = rand () % (75) + 1;
+
+   MAX_CHANGE_ON_DATE = rand () % (10) + 1;
 }
 
 void Settings::parseArgv(int argc, const char * argv[]) {
@@ -105,5 +103,20 @@ void Settings::parseArgv(int argc, const char * argv[]) {
          exit(0);
       }
    }
+}
 
+void displayHelp() {
+   cout << "Options : " << endl;
+   cout << "-seed [int] \t\t\t\t Généré au hasard si non-précisé" << endl;
+   cout << endl;
+   cout << "-pop-size [int] \t\t\t Nombre dont la moitié est paire" << endl;
+   cout << endl;
+   cout << "-stop [iterations|time|ameliorations] \t Condition d'arrêt" << endl;
+   cout << "-max-iter [int] \t\t\t Nombre max d'itérations" << endl;
+   cout << "-max-time [float] \t\t\t Durée maximale d'exécution" << endl;
+   cout << "-max-iterWA [int] \t\t\t Nombre max d'itérations sans amélioration" << endl;
+   cout << endl;
+   cout << "-p-mut-hotel [float] \t\t\t Pourcentage entre 0 et 100" << endl;
+   cout << "-p-mut-poi [float] \t\t\t Pourcentage entre 0 et 100" << endl;
+   cout << "-p-mut-date [float] \t\t\t Pourcentage entre 0 et 100" << endl;
 }
