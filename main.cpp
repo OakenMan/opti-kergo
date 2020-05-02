@@ -37,7 +37,7 @@ int main(int argc, const char * argv[])
 
         ifstream fichier(s_chemin.c_str(), std::ios::in);		// fichier = fichier data.txt
 
-		std::ofstream fichier_Sortie_Resume;					// ???
+		std::ofstream fichier_Sortie_Resume;					
 
         s_chemin=CHEMIN_DOSSIER_DONNEES;						// s_chemin = ".../opti-kergo/"
         s_chemin.append(NOM_FICHIER_LISTE_SORTIE);				//s_chemin = ".../opti-kergo/sortie.txt"
@@ -78,14 +78,15 @@ int main(int argc, const char * argv[])
 
                       cout << fixed << setprecision(2);
 
-                      cout << "--------------------------------------------------------" << endl;
-
                       /*------------- Algorithme génétique -------------*/
 
                       vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base
 
-                      cout << "=== Population de base ===" << endl;
-                      analyse(population);
+                      if(s.debug >= 1) {
+                         cout << "--------------------------------------------------------" << endl;
+                         cout << "=== Population de base ===" << endl;
+                         analyse(population);
+                      }
 
                       int iterations = 0;
                       int iterWithoutAmeliorations = 0;
@@ -95,7 +96,7 @@ int main(int argc, const char * argv[])
 
                         vector<Solution*> selection = Selection(population);                 // Selection sur la population
                         vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-                        mutation(children, instance, &s);                                        // Mutation des enfants
+                        mutation(children, instance, &s);                                    // Mutation des enfants
                         population.clear();
                         population = fusion(selection, children);                            // Ajout des enfants à la population de base
 
@@ -122,16 +123,19 @@ int main(int argc, const char * argv[])
                         i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
                       }
 
-                      cout << "\n=== Population finale ===" << endl;
-                      analyse(population);
+                      if(s.debug >= 1) {
+                         cout << "\n=== Population finale ===" << endl;
+                         analyse(population);
+                         cout << "--------------------------------------------------------" << endl;
+                      }
 
                       deletePopulation(population);   // On supprime la population finale à la fin de l'algo
 
                       /*---------------------------------------------------*/
 
-                      cout << "--------------------------------------------------------" << endl;
                       cout << "Fin de résolution de [" << s_tmp << "] en " << elapsed.count() << "s/" << iterations << " itérations" << endl;
                       cout << "Best solution (réalisable) : " << i_best_solution_score << endl;
+                      cout << "--------------------------------------------------------" << endl;
 
                       // écriture sur le fichier de sortie
                       fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;

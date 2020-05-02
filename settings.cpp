@@ -1,6 +1,8 @@
 #include "settings.hpp"
 
 Settings::Settings() {
+   debug = 0;
+
    seed = time(NULL);
 
    populationSize = 1000;
@@ -26,11 +28,12 @@ Settings::Settings() {
 }
 
 Settings::~Settings() {
-   
+
 }
 
 void Settings::printSettings() {
    cout << "----- Paramètres ---------------------------------------" << endl;
+   cout << "Debug = " << debug << endl;
    cout << "Seed = " << seed << endl;
    cout << "Taille de la population = " << populationSize << endl;
    cout << "Condition d'arrêt = ";
@@ -70,11 +73,16 @@ void displayHelp() {
 void Settings::parseArgv(int argc, const char * argv[]) {
 
    for(int i=1; i<argc; i++) {
+      if(argv[i] == string("-debug"))
+         debug = atoi(argv[i+1]);
       if(argv[i] == string("-seed"))
          seed = atol(argv[i+1]);
       if(argv[i] == string("-pop-size"))
          populationSize = atoi(argv[i+1]);
       if(argv[i] == string("-stop")) {
+         condIter = false;
+         condTime = false;
+         condAmel = false;
          string cond = argv[i+1];
          if(cond.find("iter") != string::npos)   condIter = true;
          if(cond.find("time") != string::npos)   condTime = true;

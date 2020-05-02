@@ -12,6 +12,8 @@ using namespace std;
 class Settings
 {
    public:
+      int debug;
+
       long seed;
 
       int populationSize;
