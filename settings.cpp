@@ -20,7 +20,7 @@ Settings::Settings() {
    // Probabilités de mutation, en %
    PROBA_MUT_HOTEL = 1;
    PROBA_MUT_POI = 50;
-   PROBA_MUT_DATE = 5;
+   PROBA_MUT_DATE = 10;
 
    // Changement max (positif ou négatif) de la date en une mutation
    MAX_CHANGE_ON_DATE = 5.0;

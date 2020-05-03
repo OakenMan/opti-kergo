@@ -93,12 +93,9 @@ int main(int argc, const char * argv[])
 
                       for(iterations=0; !finished; iterations++) {
 
-                        cout << "avant selection" << endl;
                         vector<Solution*> selection = Selection(population);                 // Selection sur la population
-                        cout << "apres selection" << endl;
                         vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-                        cout << "apres repro" << endl;
-                        mutation(children, instance);                                        // Mutation des enfants
+                        mutation(children, instance, &s);                                        // Mutation des enfants
 
                         population.clear();
                         population = fusion(selection, children);                            // Ajout des enfants à la population de base

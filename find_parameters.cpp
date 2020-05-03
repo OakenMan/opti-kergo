@@ -42,6 +42,7 @@ int main(int argc, const char * argv[])
   while (elapsed.count() < NOMRE_SECONDES_PAR_EXECUTION)
   {
     s.generateRandomSettings();
+    s.printSettings();
     score_solution_total = 0;
 
     for (unsigned int i = 0; i < NOMBRE_ITER_PAR_SETTINGS; i++)
@@ -53,13 +54,12 @@ int main(int argc, const char * argv[])
     {
       best_score = score_solution_total / NOMBRE_ITER_PAR_SETTINGS;
       best_setting = s;
-      s.print();
+      
       cout << "Score moyen = " << best_score << endl;
     }
     else
     {
       cout << "Settings moins bien" << endl;
-      s.print();
       cout << "score moyen = " << float(score_solution_total / NOMBRE_ITER_PAR_SETTINGS) << endl;
     }
 
@@ -113,7 +113,7 @@ int Resolution(Settings s, Instance* instance)
     chrono_start = chrono::system_clock::now();
 
                       /*------------- Paramètres de l'algo -------------*/
-    srand(s.seed);
+    srand(time(NULL));
                       /*------------- Algorithme génétique -------------*/
     vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base
 
@@ -125,7 +125,7 @@ int Resolution(Settings s, Instance* instance)
 
       vector<Solution*> selection = Selection(population);                 // Selection sur la population
       vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-      mutation(children, instance);                                        // Mutation des enfants
+      mutation(children, instance, &s);                                    // Mutation des enfants
       population.clear();
       population = fusion(selection, children);                            // Ajout des enfants à la population de base
 
@@ -142,20 +142,15 @@ int Resolution(Settings s, Instance* instance)
       }
 
       // Conditions d'arrêt
-      if(s.cond_arret == "iterations" && iterations >= s.maxIter-1)
-      { 
-        finished = true; 
-      }
-      if(s.cond_arret == "time" && elapsed.count() >= s.maxTime)
-      {
-        finished = true; 
-      }
-      if(s.cond_arret == "ameliorations" && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
-      {
-        finished = true; 
-      }
+      if(s.condIter && iterations >= s.maxIter-1)
+         finished = true;
+      if(s.condTime && elapsed.count() >= s.maxTime)
+         finished = true;
+      if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
+         finished = true;
 
       i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
+      cout << "i_best_solution_score = " << i_best_solution_score << " & iter = " << iterations << endl;
     }
 
     deletePopulation(population);   // On supprime la population finale à la fin de l'algo
