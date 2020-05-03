@@ -1,28 +1,29 @@
 #include "generation.hpp"
+
 #include <iostream>
-#include <vector>
 #include <stdio.h>
 #include <algorithm>
-#include <stdio.h>
-#include <vector>
 
+/*
+ * Génère une solution (aléatoirement mais en restant "cohérent") en se basant sur une instance
+ * Les solution générées par cette fonction sont presque toutes non-réalisables mais ont souvent une bonne fonction objectif
+ */
 Solution * generateSolution(Instance *instance) {
    Solution *sol = new Solution();
 
    // Génération de "v_Id_Hotel_Intermedaire"
    for(unsigned int i=0; i<instance->get_Nombre_Jour()-1; i++) {
-      unsigned int idHotel = rand() % instance->get_Nombre_Hotel();     // génère un id entre 0 et nbHotels-1
-      sol->v_Id_Hotel_Intermedaire.push_back(idHotel);
+      unsigned int idHotel = rand() % instance->get_Nombre_Hotel();     // Génère un hôtel au hasard
+      sol->v_Id_Hotel_Intermedaire.push_back(idHotel);                  // Et le rajoute à la liste
    }
 
    // Génération de "v_v_Sequence_Id_Par_Jour" et "v_Date_Depart"
    for(unsigned int i=0; i<instance->get_Nombre_Jour(); i++) {
-      float dateMax = 24.0;   // TODO : récupérer ce nombre depuis l'instance, puis soustraire la durée max de voyage par jour
-      float dateDepart = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/dateMax));  // génère un float entre 0.0 et dateMax
+      float dateDepart = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/instance->get_Duree_Max_Jour()));  // Génère un float entre 0.0 et dateMax
       sol->v_Date_Depart.push_back(dateDepart);
 
       vector<unsigned int> poiList;
-      unsigned int nbPOIthisDay = 5 + rand() % (instance->get_Nombre_POI() / (instance->get_Nombre_Jour() * 3));    // génère un nombre entre 0 et nbPOI/(nbJours*3)-1
+      unsigned int nbPOIthisDay = 5 + rand() % (instance->get_Nombre_POI() / (instance->get_Nombre_Jour() * 3));    // Génère un nombre entre 0 et nbPOI/(nbJours*3)-1
 
       for(unsigned int j=0; j<nbPOIthisDay; j++) {
          bool success = false;
@@ -50,13 +51,18 @@ Solution * generateSolution(Instance *instance) {
       sol->v_v_Sequence_Id_Par_Jour.push_back(poiList);
    }
 
+   // Enfin, on évalue la solution pour déterminer sa fonction objectif et son score négatif
    sol->Evaluation_Solution(instance);
 
    return sol;
 }
 
+/*
+ * Génère une solution "la plus faisable" possible en se basant sur une instance
+ * Les solutions générées par cette fonction sont presque toutes réalisables mais ont souvent une mauvaise fonction objectif
+ */
 Solution * generateFeasibleSolution(Instance *instance) {
-   const float MARGIN = 0.1;
+   const float MARGIN = 0.1; // Constance utilisée pour éviter les erreurs d'approximation sur les floats
 
    Solution *sol = new Solution();
 
@@ -65,33 +71,31 @@ Solution * generateFeasibleSolution(Instance *instance) {
    for(unsigned int i=0; i<instance->get_Nombre_POI(); i++) {
       poiAvailable.push_back(i);
    }
-   // cout << "Génération de la liste des POI disponibles" << endl;
-   // printVector(poiAvailable);
 
+   unsigned int lastHotel = instance->get_Id_Hotel_depart();      // Dernier hôtel visité
 
-   unsigned int lastHotel = instance->get_Id_Hotel_depart();
-
+   // Pour chaque jour...
    for(unsigned int j=0; j<instance->get_Nombre_Jour(); j++) {
-      // cout << "[.] Génération du jour " << j << endl;
 
       unsigned int poi;
-      float distanceThisDay = 0;
-      float dateDepart = 0;
-      vector<unsigned int> poiThisDay;
+      float distanceThisDay = 0;          // Distance parcourue ce jour
+      float dateDepart = 0;               // Date de départ de ce jour
+      vector<unsigned int> poiThisDay;    // Séquence de POI visités ce jour
 
       // Génération du premier POI et de la date de départ
       do {
          poi = poiAvailable[rand() % poiAvailable.size()];                                         // On choisit un POI dans la liste des POI non-visités
          distanceThisDay = instance->get_distance_Hotel_POI(lastHotel, poi) + MARGIN;              // On récupère la distance du dernier hotel à ce POI
-         dateDepart = max(float(0), instance->get_POI_Heure_ouverture(poi) - distanceThisDay);     // dateDepart = heure d'ouverture du POI - distance depuis l'hotel, ou 0 si ce nombre est < 0
+         dateDepart = max(float(0), instance->get_POI_Heure_ouverture(poi) - distanceThisDay);     // dateDepart = min(heure d'ouverture du POI - distance depuis l'hotel, 0)
       } while(dateDepart + distanceThisDay > instance->get_POI_Heure_fermeture(poi));              // On répète si on arrive après la fermeture de ce POI
 
-      sol->v_Date_Depart.push_back(dateDepart);    // On ajoute la date de départ à la solution
+      // On ajoute la date de départ à la solution
+      sol->v_Date_Depart.push_back(dateDepart);
 
       poiThisDay.push_back(poi);                                                    // On ajoute ce POI à la liste des POI visités le jours j
       poiAvailable.erase(find(poiAvailable.begin(), poiAvailable.end(), poi));      // Et on le supprime de la liste des POI disponibles
 
-      // Génération (arbitraire, à changer par la suite ?) de l'hôtel du soir
+      // Génération arbitraire de l'hôtel du soir
       unsigned int nextHotel;
       if(j < instance->get_Nombre_Jour() - 1) {                // Si on est pas le dernier jour
          nextHotel = rand() % instance->get_Nombre_Hotel();    // On choisit un hotel au hasard
@@ -100,11 +104,10 @@ Solution * generateFeasibleSolution(Instance *instance) {
          nextHotel = instance->get_Id_Hotel_Arrivee();         // Le prochain hotel est l'hotel d'arrivée
       }
 
-      int nbTries = 0;
-      // float distanceToNextHotel = instance->get_distance_Hotel_POI(nextHotel, poiThisDay.back());
+      int nbTries = 0;     // Nombre d'essais de rajout de POI
 
       // Ajout de POI ce jour (tant qu'on a pas atteind une certaine limite d'essais ratés)
-      while(nbTries < 100) {  // TODO : au lieu de faire avec du random, parcourir la liste de tous les POI restants ?
+      while(nbTries < 100) {
 
          // On choisit un POI parmis ceux non-visités
          poi = poiAvailable[rand() % poiAvailable.size()];
@@ -119,14 +122,14 @@ Solution * generateFeasibleSolution(Instance *instance) {
             float distanceToNextHotel = distanceThisDay + instance->get_distance_POI_POI(poiThisDay.back(), poi) + instance->get_distance_Hotel_POI(nextHotel, poi) + MARGIN;
             if(distanceToNextHotel < instance->get_POI_Duree_Max_Voyage(j)) {
 
-               // ALORS on peut ajouter ce p***** de POI
+               // ALORS on peut enfin ajouter ce POI
                distanceThisDay += instance->get_distance_POI_POI(poiThisDay.back(), poi);    // On actualise la distance parcourue ce jour
-               poiThisDay.push_back(poi);                                                    // On ajoute ce POI à la liste des POI visités le jours j
+               poiThisDay.push_back(poi);                                                    // On ajoute ce POI à la liste des POI visités ce jour
                poiAvailable.erase(find(poiAvailable.begin(), poiAvailable.end(), poi));      // Et on le supprime de la liste des POI disponibles
-               // distanceToNextHotel = instance->get_distance_Hotel_POI(nextHotel, poiThisDay.back());  // On actualise la distance au prochain hotel
                nbTries = 0;                                                                  // On reset nbTries
 
             }
+            // Si on ne peut pas ajouter le POI, on incrémente nbTries
             else {
                nbTries++;
             }
@@ -146,11 +149,15 @@ Solution * generateFeasibleSolution(Instance *instance) {
 
    }
 
+   // Enfin, on évalue la solution pour déterminer sa fonction objectif et son score négatif
    sol->Evaluation_Solution(instance);
 
    return sol;
 }
 
+/*
+ * Génère une population de taille "size"
+ */
 vector<Solution*> generation(Instance *instance, unsigned int size) {
 
    vector<Solution*> population;
@@ -168,6 +175,9 @@ vector<Solution*> generation(Instance *instance, unsigned int size) {
    return population;
 }
 
+/*
+ * Supprime une population
+ */
 void deletePopulation(vector<Solution*> population) {
    for(unsigned int i=0; i<population.size(); i++) {
       delete population[i];

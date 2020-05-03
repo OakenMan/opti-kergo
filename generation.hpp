@@ -1,26 +1,29 @@
 #ifndef generation_hpp
 #define generation_hpp
 
-#include "Instance.hpp"
 #include "Solution.hpp"
+#include "Instance.hpp"
+
+#include <vector>
 
 using namespace std;
 
-/* Ratio population non-réalisable/réalisable (ex: n=100, ratio=0.7 => 70 non-réal, 30 réal)
- * Faut pas mettre un ratio trop précis sinon ça fout le zbeul avec les virgules et tout tavu
- */
-const float RATIO_POP = 0.5;
+const float RATIO_POP = 0.5;  // Ratio population non-réalisable/réalisable (ex: n=100, ratio=0.7 => 70 non-réal, 30 réal)
 
 /*
- * Génère une solution (réalisable ou non) basée sur une instance
+ * Génère une solution (aléatoirement mais en restant "cohérent") en se basant sur une instance
+ * Les solution générées par cette fonction sont presque toutes non-réalisables mais ont souvent une bonne fonction objectif
  */
 Solution * generateSolution(Instance *instance);
 
-
+/*
+ * Génère une solution "la plus faisable" possible en se basant sur une instance
+ * Les solutions générées par cette fonction sont presque toutes réalisables mais ont souvent une mauvaise fonction objectif
+ */
 Solution * generateFeasibleSolution(Instance *instance);
 
 /*
- * Génère une population de taille "size", basée sur une instance
+ * Génère une population de taille "size"
  */
 vector<Solution*> generation(Instance *instance, unsigned int size);
 

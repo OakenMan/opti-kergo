@@ -11,6 +11,7 @@
 
 #include "Instance.hpp"
 #include "Solution.hpp"
+
 #include "selection.hpp"
 #include "generation.hpp"
 #include "reproduction.hpp"
@@ -34,16 +35,16 @@ int main(int argc, const char * argv[])
    try
    {
       string s_tmp;
-      string s_chemin=CHEMIN_DOSSIER_DONNEES;					// s_chemin = ".../opti-kergo/Data/"
-      s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);		// s_chemin = ".../opti-kergo/Data/data.txt"
+      string s_chemin=CHEMIN_DOSSIER_DONNEES;
+      s_chemin.append(NOM_FICHIER_LISTE_FICHIER_DONNEES);
 
-      ifstream fichier(s_chemin.c_str(), std::ios::in);		// fichier = fichier data.txt
+      ifstream fichier(s_chemin.c_str(), std::ios::in);
 
 		std::ofstream fichier_Sortie_Resume;
 
-      s_chemin=CHEMIN_DOSSIER_DONNEES;						// s_chemin = ".../opti-kergo/"
-      s_chemin.append(NOM_FICHIER_LISTE_SORTIE);				//s_chemin = ".../opti-kergo/sortie.txt"
-      ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);	// fichier_Sortie = sortie.txt
+      s_chemin=CHEMIN_DOSSIER_DONNEES;
+      s_chemin.append(NOM_FICHIER_LISTE_SORTIE);
+      ofstream fichier_Sortie(s_chemin.c_str(), std::ios::out | std::ios::app);
 
       if(fichier)
       {
@@ -51,7 +52,7 @@ int main(int argc, const char * argv[])
          {
             fichier_Sortie<<"Fichier données\t\tTps de résolution \tBest solution"<<endl;
 
-            getline(fichier,s_tmp);		// on récupère une ligne du fichier dans s_tmp
+            getline(fichier,s_tmp);
 
             while(s_tmp!="")
             {
@@ -71,26 +72,27 @@ int main(int argc, const char * argv[])
                s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\r'), s_chemin.end());
                s_chemin.erase(remove(s_chemin.begin(), s_chemin.end(), '\n'), s_chemin.end());
 
-               if(instance->chargement_Instance(s_chemin)) {	// on charge l'instance du fichier pointé par s_tmp
-                  chrono_start = chrono::system_clock::now();
+               // Si on arrive à charger l'instance pointée par "s_chemin" :
+               if(instance->chargement_Instance(s_chemin)) {
+                  chrono_start = chrono::system_clock::now();        // On lance le chrono
 
-                  i_best_solution_score = Resolution(instance, s);
+                  i_best_solution_score = Resolution(instance, s);   // On résout l'instance
 
-                  chrono_end = chrono::system_clock::now();
+                  chrono_end = chrono::system_clock::now();          // On arrête le chrono
                   elapsed = chrono_end - chrono_start;
 
-                  // écriture sur le fichier de sortie
+                  // On écrit la meilleur solution et le temps d'exécution sur le fichier "sortie.txt"
                   fichier_Sortie<<s_tmp <<"\t\t\t"<<elapsed.count()<<"\t\t\t"<< i_best_solution_score <<endl;
 
                   s_tmp="";
-                  getline(fichier,s_tmp);		// on relie une ligne et on recommence
+                  getline(fichier,s_tmp);		// On relie une ligne et on recommence
                   delete instance;
 
                }
                else {
                   cout<<"Erreur : impossible de charger l'instance "<<s_tmp<<endl;
                   s_tmp="";
-                  getline(fichier,s_tmp);		// on relie une ligne et on recommence
+                  getline(fichier,s_tmp);
                }
             }
             fichier_Sortie.close();
@@ -128,14 +130,14 @@ int Resolution(Instance * instance, Settings s)
    int iterWithoutAmeliorations = 0;      // Nombre d'itérations sans améliorations effectuées
    bool finished = false;                 // Boolean pour arrêter l'algorithme
 
-   unsigned int bestScore = 0;         // Score de la meilleure solution
+   unsigned int bestScore = 0;            // Score de la meilleure solution
 
    /*------------- Algorithme génétique -------------*/
-
    chrono_start = chrono::system_clock::now();
 
-   vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base
+   vector<Solution*> population = generation(instance, s.populationSize);   // Génération de la population de base (voir 'generation.hpp')
 
+   // Affichage de la population de départ (option de debug)
    if(s.debug >= 1) {
       cout << "--------------------------------------------------------" << endl;
       cout << "=== Population de base ===" << endl;
@@ -144,11 +146,11 @@ int Resolution(Instance * instance, Settings s)
 
    for(iterations=0; !finished; iterations++) {
 
-      vector<Solution*> selection = Selection(population);                 // Selection sur la population
-      vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-      mutation(children, instance, &s);                                    // Mutation des enfants
-      population.clear();
-      population = fusion(selection, children);                            // Ajout des enfants à la population de base
+      vector<Solution*> selection = Selection(population);                 // Selection sur la population (voir 'selection.hpp')
+      vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection (voir 'reproduction.hpp')
+      mutation(children, instance, &s);                                    // Mutation des enfants (voir 'mutation.hpp')
+      population.clear();                                                  // On "vide" la population et on la recréée
+      population = fusion(selection, children);                            // à partir de la sélection et des enfants
 
       // Mise à jour du chrono
       chrono_end = chrono::system_clock::now();
@@ -170,25 +172,30 @@ int Resolution(Instance * instance, Settings s)
       if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)   // Si on dépassé le nombre max d'itérations sans améliorations
           finished = true;
 
-      // Mise à jour du meilleur score
+      // Mise à jour du meilleur score (voir 'stats.hpp')
       bestScore = getBestScore(population, true);
-
-      // cout << "it=" << iterations << ", best=" << bestScore << endl;
    }
 
+   // Affichage de la population finale (option de debug)
    if(s.debug >= 1) {
       cout << "\n=== Population finale ===" << endl;
       analyse(population);
       cout << "--------------------------------------------------------" << endl;
    }
 
+   // On récupère la meilleure solution (voir "stats.hpp")
    Solution * bestSolution = getBestSolution(population);
 
-   bestSolution->print();
+   // On l'affiche (option de debug)
+   if(s.debug >= 1) {
+      bestSolution->print();
+   }
 
+   // On vérifie qu'elle est bien réalisable
    bestSolution->Verification_Solution(instance);
 
-   deletePopulation(population);   // On supprime de la mémoire la population finale à la fin de l'algo
+   // On supprime de la mémoire la population finale à la fin de l'algo
+   deletePopulation(population);
 
    cout << "Fin de résolution en " << elapsed.count() << "s/" << iterations << " itérations" << endl;
    cout << "Meilleure solution : " << bestScore << endl;

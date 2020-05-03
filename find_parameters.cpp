@@ -11,6 +11,7 @@
 
 #include "Instance.hpp"
 #include "Solution.hpp"
+
 #include "selection.hpp"
 #include "generation.hpp"
 #include "reproduction.hpp"

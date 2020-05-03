@@ -50,9 +50,6 @@ clean:
 mrproper: clean
 	rm -f $(EXEC)
 
-# j'ai rajouté un argumenter au valgrind histoire de pouvoir faire make valgrind ARG="..."
+# make valgrind ARG="./exec"
 valgrind: $(ARG)
 	valgrind ./$(ARG) -f -tool=memcheck -leak-check=full track-origin=yes
-
-gene: generation.cpp Solution.cpp Instance.cpp vector_methods.cpp
-	$(CC) -o $@ $^ $(CFLAGS)

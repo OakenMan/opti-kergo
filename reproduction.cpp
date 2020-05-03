@@ -1,14 +1,15 @@
 #include "reproduction.hpp"
+
 #include <iostream>
-#include <vector>
 #include <algorithm>
 #include <chrono>
 #include <limits.h>
 
 /*
- * Crossover PMX
- * [!] Ne fonctionne pas vraiment mais je le garde au cas où
+ * Crossover PMX (légèrement modifié)
+ * [!] Inutilisé
  */
+/*
 vector<unsigned int> pmx(vector<unsigned int> p1, vector<unsigned int> p2) {
 
    vector<unsigned int> child;
@@ -102,29 +103,32 @@ vector<unsigned int> pmx(vector<unsigned int> p1, vector<unsigned int> p2) {
 
    return child;
 }
+*/
 
 /*
  * Crossover OX1
- * O(n)
+ * (légèrement modifié pour qu'il puisse fonctionner sur des vecteurs de tailles différentes et qu'il donne un résultat sans doublons)
+ * Complexité : O(n)
  */
 vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
 
    vector<unsigned int> child;
 
-   unsigned int n1 = p1.size();
-   unsigned int n2 = p2.size();
+   unsigned int n1 = p1.size();  // Taille de p1
+   unsigned int n2 = p2.size();  // Taille de p2
 
    unsigned int smallestSize = min(n1, n2);
 
    // On modifie les parents en rajoutant des UINT_MAX pour qu'ils soient de même taille
-   // Si p1 plus grand que p2
+   // On utilise la constante UINT_MAX car c'est peu probable qu'on ai 4 milliards de POI...
+   // Si p1 plus grand que p2 :
    if(n2 < n1) {
       // On rallonge p2
       for(unsigned int i=0; i<n1-n2; i++) {
          p2.push_back(UINT_MAX);
       }
    }
-   // Si p2 plus grand que p1
+   // Si p2 plus grand que p1 :
    else if(n1 < n2) {
       // On rallonge p1
       for(unsigned int i=0; i<n2-n1; i++) {
@@ -132,13 +136,13 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
       }
    }
 
-   unsigned int n = p1.size();
+   unsigned int n = p1.size();   // Taille des deux vecteurs après modification
 
-   child.reserve(n+1);
+   child.reserve(n+1);           // On alloue de la place pour l'enfant (plus de la sureté qu'autre chose)
 
-   // Initialisation des enfants
+   // Initialisation de l'enfant
    for(unsigned int i=0; i<n; i++) {
-      child.push_back(UINT_MAX);   //### VALGRIND : ici on malloc pas assez de place
+      child.push_back(UINT_MAX);
    }
 
    // Indices choisis pour la "coupe"
@@ -149,27 +153,26 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
    unsigned int cutStart   = rand() % (smallestSize - cutLength + 1);
    unsigned int cutEnd     = cutStart + cutLength - 1;
 
-   // cout << "\tmaxSize=" << n << ", minSize=" << smallestSize << ", length=" << cutLength << ", coupe=[" << cutStart << ", " << cutEnd << "]" << endl;
-
    // Copie de la coupe de p1 dans child
    for(unsigned int i=cutStart; i<=cutEnd; i++) {
       child[i] = p1[i];
    }
 
    unsigned int index=0;
+
    for(unsigned int i=0; i<n && index < n; i++) {
       // On saute la coupe, qui est déjà initialisée chez l'enfant
       if(index == cutStart) {
          index += cutLength;
       }
       // Si p2[i] n'as pas été copiée dans l'enfant, on le rajoute à la première place disponible
-      if(!contains(child, p2[i]) || p2[i] == UINT_MAX) {
-         child[index] = p2[i];      //### VALGRIND : ici des fois on écrit trop loin (pourquoi??)
+      if(!contains(child, p2[i]) || p2[i] == UINT_MAX) {             // voir 'vector_methods.hpp'
+         child[index] = p2[i];
          index++;
       }
    }
 
-   // Et on supprime les 0 en trop dans child
+   // Et on supprime les UINT_MAX en trop dans child
    vector<unsigned int>::iterator it;
    do {
       it = find(child.begin(), child.end(), UINT_MAX);
@@ -180,10 +183,10 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
       }
    } while(it != child.end());
 
+   // On désalloue la place en trop utilisée par l'enfant
    child.shrink_to_fit();
 
    return child;
-
 }
 
 /*
@@ -191,7 +194,7 @@ vector<unsigned int> ox1(vector<unsigned int> p1, vector<unsigned int> p2) {
  */
 vector<vector<unsigned int>> crossover(vector<vector<unsigned int>> p1, vector<vector<unsigned int>> p2) {
 
-   // On fusione tous les vecteurs (=séquences de POI) en un seul vector
+   // On fusionne tous les vecteurs (=séquences de POI) en un seul vector (voir 'vector_methods.hpp')
    vector<unsigned int> p1Linked = linkVectors(p1);
    vector<unsigned int> p2Linked = linkVectors(p2);
 
@@ -200,7 +203,7 @@ vector<vector<unsigned int>> crossover(vector<vector<unsigned int>> p1, vector<v
 
    vector<vector<unsigned int>> child;
 
-   // On re sépare les vecteurs en suivant le modèle de p2
+   // On re-sépare le vecteur enfant en suivant le modèle de p2
    unsigned int index = 0;
    unsigned int day = 0;
    while(index < childLinked.size() && day < p2.size()) {
@@ -214,20 +217,19 @@ vector<vector<unsigned int>> crossover(vector<vector<unsigned int>> p1, vector<v
    }
 
    return child;
-
 }
 
 /*
- * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement (possibilité de le générer différement)
+ * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement
  */
 vector<unsigned int> shuffle_int(vector<unsigned int> *p1, vector<unsigned int> *p2) {
 
    vector<unsigned int> pattern;
    vector<unsigned int> child;
 
-   unsigned int n = p1->size(); // ici, p1 et p2 font forcément la même taille
+   unsigned int n = p1->size(); // Ici, p1 et p2 font forcément la même taille
 
-   // Génère un pattern composé de 0 et de 1 (adaptable par la suite si le random c'est pas ouf)
+   // Génère un pattern composé de 0 et de 1 (ex : 01001011)
    for(unsigned int i=0; i<n; i++) {
       pattern.push_back(rand() % 2);
    }
@@ -242,16 +244,16 @@ vector<unsigned int> shuffle_int(vector<unsigned int> *p1, vector<unsigned int> 
 }
 
 /*
- * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement (possibilité de le générer différement)
+ * Mélange 2 vecteurs en fonction d'un pattern généré aléatoirement
  */
 vector<float> shuffle_float(vector<float> *p1, vector<float> *p2) {
 
    vector<unsigned int> pattern;
    vector<float> child;
 
-   unsigned int n = p1->size(); // ici, p1 et p2 font forcément la même taille
+   unsigned int n = p1->size(); // Ici, p1 et p2 font forcément la même taille
 
-   // Génère un pattern composé de 0 et de 1
+   // Génère un pattern composé de 0 et de 1 (ex : 01001011)
    for(unsigned int i=0; i<n; i++) {
       pattern.push_back(rand() % 2);
    }
@@ -281,6 +283,7 @@ Solution * reproduce(Solution *p1, Solution *p2, Instance *instance) {
    // On mélange des heures de départ
    child->v_Date_Depart = shuffle_float(&p1->v_Date_Depart, &p2->v_Date_Depart);
 
+   // On évalue (fonction objectif et score négatif) la nouvelle solution
    child->Evaluation_Solution(instance);
 
    return child;
@@ -288,12 +291,13 @@ Solution * reproduce(Solution *p1, Solution *p2, Instance *instance) {
 
 /*
  * Reproduit une population
- * [!] La taille de la population doit être PAIRE
- * O(p*n) avec p = taille de la population et n = nombre de POI visités par solution
+ * [!] La taille de la population doit être PAIRE [!]
+ * Complexité : ~O(p*n) avec p = taille de la population et n = nombre de POI visités par solution
  */
 vector<Solution*> reproduction(vector<Solution*> population, Instance *instance) {
    vector<Solution*> children;
 
+   // Pour chaque "couple" de parents p1 et p2, on créé 2 enfants en "mélangeant" p1 à p2, puis p2 à p1.
    for(unsigned int i=0; i<population.size(); i+=2) {
       children.push_back(reproduce(population[i], population[i+1], instance));
       children.push_back(reproduce(population[i+1], population[i], instance));

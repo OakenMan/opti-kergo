@@ -8,9 +8,10 @@
 
 Solution::Solution()
 {
-    i_valeur_fonction_objectif=0;
+    i_valeur_fonction_objectif = 0;
     i_valeur_score_negatif = 0;
 }
+
 Solution::~Solution()
 {
    v_Id_Hotel_Intermedaire.clear();

@@ -1,22 +1,14 @@
 #ifndef mutation_hpp
 #define mutation_hpp
 
-#include "Instance.hpp"
 #include "Solution.hpp"
+#include "Instance.hpp"
 #include "vector_methods.hpp"
 #include "settings.hpp"
 
 #include <vector>
 
 using namespace std;
-
-// Probabilités de mutation, en %
-const float PROBA_MUT_HOTEL = 1;
-const float PROBA_MUT_POI = 50;
-const float PROBA_MUT_DATE = 5;
-
-// Changement max (positif ou négatif) de la date en une mutation
-const float MAX_CHANGE_ON_DATE = 5.0;
 
 /*
  * Fait muter la liste des hôtels intermédiaires d'une solution
