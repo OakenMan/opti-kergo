@@ -5,42 +5,6 @@
 #include <chrono>
 #include <limits.h>
 
-/*int main(int argc, const char * argv[]){
-
-   srand(time(NULL));
-
-   chrono::time_point<chrono::system_clock> chrono_start, chrono_end;
-   chrono::duration<double> elapsed;
-
-   // Lecture de l'instance
-   Instance *instance = new Instance();
-   if(!instance->chargement_Instance("Data/Inst8.txt")) {
-      cerr << "Impossible de charger l'instance" << endl;
-   }
-
-   // Génération de la population de base
-   vector<Solution*> population = generation(instance, 100000);
-
-   chrono_start = chrono::system_clock::now();
-
-   // Reproduction de la population
-   vector<Solution*> children;
-
-   children = reproduction(population);
-
-   chrono_end = chrono::system_clock::now();
-
-   // On supprime les populations
-   deletePopulation(population);
-   deletePopulation(children);
-
-   elapsed=chrono_end-chrono_start;
-
-   cout << "time = " << elapsed.count() << endl;
-
-   return 0;
-}*/
-
 /*
  * Crossover PMX
  * [!] Ne fonctionne pas vraiment mais je le garde au cas où

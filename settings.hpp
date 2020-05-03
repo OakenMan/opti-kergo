@@ -12,6 +12,8 @@ using namespace std;
 class Settings
 {
    public:
+      int debug;
+
       long seed;
 
       int populationSize;
@@ -41,7 +43,7 @@ class Settings
        virtual ~Settings();
 
        void generateRandomSettings();
-       void printSettings();
+       void print();
 
        void parseArgv(int argc, const char * argv[]);
 

@@ -170,6 +170,9 @@ void Solution::Evaluation_Solution(Instance * instance)
     set<unsigned int> set_POIs_Visites; //Liste de tout les POIs parcourus (éviter les doublons)
     float f_date;
 
+    i_valeur_fonction_objectif = 0;
+    i_valeur_score_negatif = 0;
+
     //Vérification des Ids POIs
     for(i=0;i<v_v_Sequence_Id_Par_Jour.size();i++)
     {

@@ -1,4 +1,5 @@
 Inst1.txt
+<<<<<<< HEAD
 Inst2.txt
 Inst3.txt
 Inst4.txt
@@ -25,3 +26,5 @@ Inst24.txt
 Inst25.txt
 Inst26.txt
 Inst27.txt
+=======
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6

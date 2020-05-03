@@ -26,8 +26,8 @@ int Resolution(Settings s, Instance* instance);
 
 int main(int argc, const char * argv[])
 {
-  unsigned int NOMBRE_ITER_PAR_SETTINGS = 30;
-  unsigned int NOMRE_SECONDES_PAR_EXECUTION = 28800; // 8h = 28800
+  unsigned int NOMBRE_ITER_PAR_SETTINGS = 5;
+  unsigned int NOMRE_SECONDES_PAR_EXECUTION = 600; // 8h = 28800
 
   Settings s;
   Settings best_setting;
@@ -45,27 +45,45 @@ int main(int argc, const char * argv[])
     s.printSettings();
     score_solution_total = 0;
 
+    // cout << "Test avec les settings suivantes : " << endl;
+    // s.print();
+
     for (unsigned int i = 0; i < NOMBRE_ITER_PAR_SETTINGS; i++)
     {
-      score_solution_total += Resolution(s, instance);
+       int score = Resolution(s, instance);
+       score_solution_total += score;
+       cout << i << " - " << score << endl;
     }
 
-    if (float(score_solution_total / NOMBRE_ITER_PAR_SETTINGS) > best_score)
+    float score_moyen = float(score_solution_total / NOMBRE_ITER_PAR_SETTINGS);
+    if (score_moyen > best_score)
     {
-      best_score = score_solution_total / NOMBRE_ITER_PAR_SETTINGS;
+      cout << "MEILLEURS SETTINGS TROUVÉS : " << endl;
+      best_score = score_moyen;
       best_setting = s;
       
       cout << "Score moyen = " << best_score << endl;
     }
     else
     {
+<<<<<<< HEAD
       cout << "Settings moins bien" << endl;
       cout << "score moyen = " << float(score_solution_total / NOMBRE_ITER_PAR_SETTINGS) << endl;
+=======
+      cout << "SETTINGS MOINS BIEN" << endl;
+      // s.print();
+      // cout << "Score moyen = " << score_moyen << endl;
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
     }
 
     chrono_end = chrono::system_clock::now();
     elapsed = chrono_end - chrono_start;
+    cout << "time = " << elapsed.count() << "s" << endl;
   }
+
+  cout << "BEST SETTINGS : " << endl;
+  best_setting.print();
+  cout << "MOYENNE : " << best_score << endl;
 }
 
 Instance* Prechargement_Instance()
@@ -91,7 +109,7 @@ Instance* Prechargement_Instance()
       cout<<"Erreur : impossible de charger l'instance "<<s_tmp<<endl;
     }
   }
-  
+
   else
   {
     cout<<" Erreur lecture des données : chemin listant l'ensemble des données non valide. "<<endl;
@@ -125,7 +143,11 @@ int Resolution(Settings s, Instance* instance)
 
       vector<Solution*> selection = Selection(population);                 // Selection sur la population
       vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
+<<<<<<< HEAD
       mutation(children, instance, &s);                                    // Mutation des enfants
+=======
+      mutation(children, instance, &s);                                        // Mutation des enfants
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
       population.clear();
       population = fusion(selection, children);                            // Ajout des enfants à la population de base
 
@@ -143,15 +165,31 @@ int Resolution(Settings s, Instance* instance)
 
       // Conditions d'arrêt
       if(s.condIter && iterations >= s.maxIter-1)
+<<<<<<< HEAD
          finished = true;
       if(s.condTime && elapsed.count() >= s.maxTime)
          finished = true;
       if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
          finished = true;
+=======
+      {
+        finished = true;
+      }
+      if(s.condTime && elapsed.count() >= s.maxTime)
+      {
+        finished = true;
+      }
+      if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
+      {
+        finished = true;
+      }
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
 
       i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
       cout << "i_best_solution_score = " << i_best_solution_score << " & iter = " << iterations << endl;
     }
+
+    // cout << "Finished in " << elapsed.count() << "s/" << iterations << " itérations" << endl;
 
     deletePopulation(population);   // On supprime la population finale à la fin de l'algo
     /*---------------------------------------------------*/
