@@ -43,6 +43,7 @@ int main(int argc, const char * argv[])
   while (elapsed.count() < NOMRE_SECONDES_PAR_EXECUTION)
   {
     s.generateRandomSettings();
+    s.printSettings();
     score_solution_total = 0;
 
     // cout << "Test avec les settings suivantes : " << endl;
@@ -61,14 +62,19 @@ int main(int argc, const char * argv[])
       cout << "MEILLEURS SETTINGS TROUVÉS : " << endl;
       best_score = score_moyen;
       best_setting = s;
-      s.print();
+      
       cout << "Score moyen = " << best_score << endl;
     }
     else
     {
+<<<<<<< HEAD
+      cout << "Settings moins bien" << endl;
+      cout << "score moyen = " << float(score_solution_total / NOMBRE_ITER_PAR_SETTINGS) << endl;
+=======
       cout << "SETTINGS MOINS BIEN" << endl;
       // s.print();
       // cout << "Score moyen = " << score_moyen << endl;
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
     }
 
     chrono_end = chrono::system_clock::now();
@@ -138,7 +144,11 @@ int Resolution(Settings s, Instance* instance)
 
       vector<Solution*> selection = Selection(population);                 // Selection sur la population
       vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
+<<<<<<< HEAD
+      mutation(children, instance, &s);                                    // Mutation des enfants
+=======
       mutation(children, instance, &s);                                        // Mutation des enfants
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
       population.clear();
       population = fusion(selection, children);                            // Ajout des enfants à la population de base
 
@@ -156,6 +166,13 @@ int Resolution(Settings s, Instance* instance)
 
       // Conditions d'arrêt
       if(s.condIter && iterations >= s.maxIter-1)
+<<<<<<< HEAD
+         finished = true;
+      if(s.condTime && elapsed.count() >= s.maxTime)
+         finished = true;
+      if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
+         finished = true;
+=======
       {
         finished = true;
       }
@@ -167,8 +184,10 @@ int Resolution(Settings s, Instance* instance)
       {
         finished = true;
       }
+>>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
 
       i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
+      cout << "i_best_solution_score = " << i_best_solution_score << " & iter = " << iterations << endl;
     }
 
     // cout << "Finished in " << elapsed.count() << "s/" << iterations << " itérations" << endl;

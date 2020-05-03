@@ -96,7 +96,6 @@ void melange_tableau(vector<Solution*>* solutions)
 /*
 Trie un tableau de solutions irréalisables selon un ordre croissant de leur ratio "score objectif / score négatif"
 */
-//TODO : Implémenter un algorithme plus efficace
 void trier_tableau_par_ratio_objectif_negatif(vector<Solution*>* solutions)
 {
     unsigned int i;
@@ -148,7 +147,6 @@ int indice_ratio_obj_neg_max(vector<Solution*>* solutions, int indice_depart)
 /*
 Trie un tableau de solutions réalisables selon un ordre croissant de leur score objectif
 */
-//TODO : Implémenter un algorithme plus efficace
 void trier_tableau_par_score_objectif(vector<Solution*> * solutions)
 {
     unsigned int i;
