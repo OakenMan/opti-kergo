@@ -6,28 +6,29 @@
 #include <chrono>
 #include <ctime>
 #include <string>
+#include <cstdlib>
 
 using namespace std;
 
+/*
+ * Classe qui contient tous les paramètres de l'algorithme
+ */
 class Settings
 {
    public:
-      int debug;
+      int debug;  // Niveau de debug (0 = aucune affichage)
 
-      long seed;
+      long seed;  // Seed utilisé pour la génération de nombres aléatoires
 
-      int populationSize;
+      int populationSize;  // Taille de la population
 
-      int maxIter;
-      double maxTime;
-      int maxIterWithoutAmeliorations;
+      int maxIter;                     // Nombre max d'itérations avant arrêt
+      double maxTime;                  // Nombre max de secondes avant arrêt
+      int maxIterWithoutAmeliorations; // Nombre max d'itérations sans améliorations avant arrêt
 
-      bool condIter;
-      bool condTime;
-      bool condAmel;
-
-      unsigned int MIN_CUT_SIZE;   // Taille min d'une coupe  /!\ Si des jours ont moins de 2 POI, mettre celle ci à 1 sinon crash
-      unsigned int MAX_CUT_SIZE;   // Nombre de POI en 1 jour - MAX_CUT_SIZE = Taille max d'une coupe (ex: si 8 POI et MAX_CUT_SIZE=2, taille max = 6)
+      bool condIter;    //
+      bool condTime;    // Booléens pour les conditions d'arrêt
+      bool condAmel;    //
 
       // Probabilités de mutation, en %
       float PROBA_MUT_HOTEL;
@@ -38,17 +39,31 @@ class Settings
       float MAX_CHANGE_ON_DATE;
 
    public:
-   /* Constructeurs et destructeur  */
+       /* Constructeur et destructeur  */
        Settings();
        virtual ~Settings();
 
+       /*
+        * Génère des paramètres au hasard, utilisé dans le programme "find_parameters"
+        * Actuellement non-utilisé
+        */
        void generateRandomSettings();
+
+       /*
+        * Affiche les paramètres
+        */
        void print();
 
+       /*
+        * Parse les paramètres à partir des arguments du programme
+        */
        void parseArgv(int argc, const char * argv[]);
 
 };
 
+/*
+ * Affiche l'aide (./exec -h)
+ */
 void displayHelp();
 
 #endif

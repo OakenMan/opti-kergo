@@ -22,6 +22,11 @@
 
 using namespace std;
 
+/*
+ * Tentative de créer une programme pour trouver automatique les meilleurs paramètres de notre algorithme.
+ * Non-utilisé par manque de temps...
+ */
+
 Instance* Prechargement_Instance();
 int Resolution(Settings s, Instance* instance);
 
@@ -43,11 +48,8 @@ int main(int argc, const char * argv[])
   while (elapsed.count() < NOMRE_SECONDES_PAR_EXECUTION)
   {
     s.generateRandomSettings();
-    s.printSettings();
+    s.print();
     score_solution_total = 0;
-
-    // cout << "Test avec les settings suivantes : " << endl;
-    // s.print();
 
     for (unsigned int i = 0; i < NOMBRE_ITER_PAR_SETTINGS; i++)
     {
@@ -62,19 +64,13 @@ int main(int argc, const char * argv[])
       cout << "MEILLEURS SETTINGS TROUVÉS : " << endl;
       best_score = score_moyen;
       best_setting = s;
-      
+
       cout << "Score moyen = " << best_score << endl;
     }
     else
     {
-<<<<<<< HEAD
       cout << "Settings moins bien" << endl;
       cout << "score moyen = " << float(score_solution_total / NOMBRE_ITER_PAR_SETTINGS) << endl;
-=======
-      cout << "SETTINGS MOINS BIEN" << endl;
-      // s.print();
-      // cout << "Score moyen = " << score_moyen << endl;
->>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
     }
 
     chrono_end = chrono::system_clock::now();
@@ -144,11 +140,7 @@ int Resolution(Settings s, Instance* instance)
 
       vector<Solution*> selection = Selection(population);                 // Selection sur la population
       vector<Solution*> children = reproduction(selection, instance);      // Reproduction de la selection
-<<<<<<< HEAD
       mutation(children, instance, &s);                                    // Mutation des enfants
-=======
-      mutation(children, instance, &s);                                        // Mutation des enfants
->>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
       population.clear();
       population = fusion(selection, children);                            // Ajout des enfants à la population de base
 
@@ -157,7 +149,7 @@ int Resolution(Settings s, Instance* instance)
       elapsed=chrono_end-chrono_start;
 
       // Update du nombre d'itérations sans améliorations
-      if(bestSolution(population, true) > i_best_solution_score) {
+      if(getBestScore(population, true) > i_best_solution_score) {
         iterWithoutAmeliorations = 0;
       }
       else {
@@ -166,27 +158,13 @@ int Resolution(Settings s, Instance* instance)
 
       // Conditions d'arrêt
       if(s.condIter && iterations >= s.maxIter-1)
-<<<<<<< HEAD
          finished = true;
       if(s.condTime && elapsed.count() >= s.maxTime)
          finished = true;
       if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
          finished = true;
-=======
-      {
-        finished = true;
-      }
-      if(s.condTime && elapsed.count() >= s.maxTime)
-      {
-        finished = true;
-      }
-      if(s.condAmel && iterWithoutAmeliorations >= s.maxIterWithoutAmeliorations)
-      {
-        finished = true;
-      }
->>>>>>> 42fa5de29d6a3786b46354fe02e3f3a1914489b6
 
-      i_best_solution_score = bestSolution(population, true);     // Mise à jour du meilleur score
+      i_best_solution_score = getBestScore(population, true);     // Mise à jour du meilleur score
       cout << "i_best_solution_score = " << i_best_solution_score << " & iter = " << iterations << endl;
     }
 

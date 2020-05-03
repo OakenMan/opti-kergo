@@ -1,5 +1,6 @@
 #include "stats.hpp"
 
+// Renvoie le meilleur score d'une population, en prenant uniquement en compte les solutions réalisables si onlyFeasible = true
 unsigned int getBestScore(vector<Solution*> population, bool onlyFeasible) {
    unsigned int bestSolution = 0;
    unsigned int index = 0;
@@ -26,6 +27,7 @@ unsigned int getBestScore(vector<Solution*> population, bool onlyFeasible) {
    return bestSolution;
 }
 
+// Renvoie la meilleure solution réalisable d'une population
 Solution * getBestSolution(vector<Solution*> population) {
    Solution * bestSolution = new Solution();
    bestSolution->i_valeur_fonction_objectif = 0;
@@ -39,6 +41,7 @@ Solution * getBestSolution(vector<Solution*> population) {
    return bestSolution;
 }
 
+// Renvoie le meilleur ratio (fonction objectif/score négatif) d'une population
 float bestRatio(vector<Solution*> population) {
    float bestRatio = 0;
    unsigned int index = 0;
@@ -58,6 +61,7 @@ float bestRatio(vector<Solution*> population) {
    return bestRatio;
 }
 
+// Renvoie le score moyen d'une population
 float averageScore(vector<Solution*> population, bool onlyFeasible) {
    unsigned int sum = 0;
    int nbr = 1;
@@ -78,6 +82,7 @@ float averageScore(vector<Solution*> population, bool onlyFeasible) {
    return (float)(sum / nbr);
 }
 
+// Renvoie le ratio moyen d'une population
 float averageRatio(vector<Solution*> population) {
    float sum = 0;
    for(unsigned int i=0; i<population.size(); i++) {
@@ -87,6 +92,7 @@ float averageRatio(vector<Solution*> population) {
    return sum / population.size();
 }
 
+// Renvoie la "diversité" (solutions non-réalisables | solutions réalisables) d'une population
 vector<unsigned int> diversity(vector<Solution*> population) {
    vector<unsigned int> diversity;
    diversity.push_back(0);
@@ -104,6 +110,7 @@ vector<unsigned int> diversity(vector<Solution*> population) {
    return diversity;
 }
 
+// Affiche un récapitulatif d'une population
 void analyse(vector<Solution*> population) {
    cout << "Taille de la population : " << population.size() << endl;
    cout << "Meilleurs solution / Moyennes " << endl;
@@ -116,6 +123,7 @@ void analyse(vector<Solution*> population) {
    printVector(div);
 }
 
+// Réacapitulatif en une seule ligne
 void analyseOneLine(vector<Solution*> population) {
    cout << bestRatio(population) << "\t| " << averageRatio(population) << "\t| ";
    vector<unsigned int> div = diversity(population);

@@ -196,18 +196,18 @@ int indice_score_objectif_max(vector<Solution*>* solutions, int indice_depart)
 }
 
 /*
- * Ajoute la population 2 à la population 1
+ * Créé une nouvelle population à partir de pop1 et pop2
  */
 vector<Solution*> fusion(vector<Solution*> pop1, vector<Solution*> pop2) {
 
    vector<Solution*> newPop;
 
-   // On ajoute la population 2 à la population 1
+   // On ajoute la population 1
    for(unsigned int i=0; i<pop1.size(); i++) {
       newPop.push_back(pop1[i]);
    }
 
-   // On ajoute la population 2 à la population 1
+   // On ajoute la population 2
    for(unsigned int i=0; i<pop2.size(); i++) {
       newPop.push_back(pop2[i]);
    }

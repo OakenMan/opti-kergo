@@ -163,26 +163,27 @@ bool Solution::Verification_Solution(Instance *instance)
     return b_solution_ok;
 }
 
-//Calcule la valeur de la fonction objectif d'une solution ainsi que son score "d'infaisabilité"
-//ON ADMET QUE LA SOLUTION NE PRESENTE PAS D'ABHERATION (ie : même si elle n'est pas réalisable, elle est valide)
+/*
+ * Calcule la fonction objectif et le score négatif d'une solution
+ */
 void Solution::Evaluation_Solution(Instance * instance)
 {
-    unsigned int i, j; //Indice de parcours de boucle
-    set<unsigned int> set_POIs_Visites; //Liste de tout les POIs parcourus (éviter les doublons)
+    unsigned int i, j; // Indice de parcours de boucle
+    set<unsigned int> set_POIs_Visites; // Liste de tout les POIs parcourus (éviter les doublons)
     float f_date;
 
     i_valeur_fonction_objectif = 0;
     i_valeur_score_negatif = 0;
 
-    //Vérification des Ids POIs
+    // Vérification des Ids POIs
     for(i=0;i<v_v_Sequence_Id_Par_Jour.size();i++)
     {
         for(j=0;j<v_v_Sequence_Id_Par_Jour[i].size();j++)
         {
-            //A t-on déjà croisé le POI ?
+            // A t-on déjà croisé le POI ?
             if(set_POIs_Visites.find(v_v_Sequence_Id_Par_Jour[i][j])==set_POIs_Visites.end())
             {
-                //Si non on l'ajoute à la liste des POI déjà visités
+                // Si non on l'ajoute à la liste des POI déjà visités
                 set_POIs_Visites.insert(v_v_Sequence_Id_Par_Jour[i][j]);
                 i_valeur_fonction_objectif=i_valeur_fonction_objectif+instance->get_POI_Score(v_v_Sequence_Id_Par_Jour[i][j]);
             }
@@ -193,13 +194,13 @@ void Solution::Evaluation_Solution(Instance * instance)
         }
     }
 
-    //Vérification du respect des fenêtres de temps des POIs et  des durées maximales d'une journée
+    // Vérification du respect des fenêtres de temps des POIs et  des durées maximales d'une journée
     for(i=0;i<v_v_Sequence_Id_Par_Jour.size();i++)
     {
         if(v_v_Sequence_Id_Par_Jour[i].size()!=0)
         {
             f_date=v_Date_Depart[i];
-            //On ajoute d'abord le temps de trajet nécessaire pour rejoindre le premier POI depuis l'hotel
+            // On ajoute d'abord le temps de trajet nécessaire pour rejoindre le premier POI depuis l'hotel
             if(i==0)
                 f_date=f_date+instance->get_distance_Hotel_POI(instance->get_Id_Hotel_depart(), v_v_Sequence_Id_Par_Jour[i][0]);
             else
@@ -207,40 +208,38 @@ void Solution::Evaluation_Solution(Instance * instance)
             j=0;
             do
             {
-                //Si on arrive avant l'ouverture du POI, on attends
+                // Si on arrive avant l'ouverture du POI, on attends
                 if(f_date<instance->get_POI_Heure_ouverture(v_v_Sequence_Id_Par_Jour[i][j]))
                     f_date=instance->get_POI_Heure_ouverture(v_v_Sequence_Id_Par_Jour[i][j]);
                 else
                 {
-                    //Si on arrive après la fermeture du POI
+                    // Si on arrive après la fermeture du POI
                     if(f_date>instance->get_POI_Heure_fermeture(v_v_Sequence_Id_Par_Jour[i][j]))
                     {
-                        // cout<< "Erreur : arrivé après la fermeture du POI "<<v_v_Sequence_Id_Par_Jour[i][j]<<", heure : "<< f_date<<"." <<endl;
                         i_valeur_score_negatif += calculer_score_retard(instance->get_Duree_Max_Jour(), f_date, instance->get_POI_Heure_fermeture(v_v_Sequence_Id_Par_Jour[i][j]), 0, 30, 1, 5);
                     }
                 }
                 j++;
-                //Si il reste encore des POIs à voir
+                // Si il reste encore des POIs à voir
                 if(j<v_v_Sequence_Id_Par_Jour[i].size())
                 {
-                    //On augmente le temps de trajet
+                    // On augmente le temps de trajet
                     f_date=f_date+instance->get_distance_POI_POI(v_v_Sequence_Id_Par_Jour[i][j-1], v_v_Sequence_Id_Par_Jour[i][j]);
                 }
             }while(j<v_v_Sequence_Id_Par_Jour[i].size());
 
-            //On fini par ajouter le temps de trajet pour rejoindre l'hotel
+            // On fini par ajouter le temps de trajet pour rejoindre l'hotel
             if(i==(v_v_Sequence_Id_Par_Jour.size()-1))
                 f_date=f_date+instance->get_distance_Hotel_POI(instance->get_Id_Hotel_Arrivee(), v_v_Sequence_Id_Par_Jour[i][j-1]);
             else
                 f_date=f_date+instance->get_distance_Hotel_POI(v_Id_Hotel_Intermedaire[i], v_v_Sequence_Id_Par_Jour[i][j-1]);
-            //Si on dépasse le temps de trajet max pour cette journée
+            // Si on dépasse le temps de trajet max pour cette journée
             if((f_date-v_Date_Depart[i])>instance->get_POI_Duree_Max_Voyage(i))
             {
-                // cout<< "Erreur : durée max du jour "<<i<<" dépassée puisqu'elle dure : "<< (f_date-v_Date_Depart[i])<<"." <<endl;
                 i_valeur_score_negatif += calculer_score_retard(instance->get_Duree_Max_Jour(), f_date-v_Date_Depart[i], instance->get_POI_Duree_Max_Voyage(i), 0, 30, 1, 5);
             }
         }
-        //Si on ne voit aucun POI
+        // Si on ne voit aucun POI
         else
         {
             int i_ID_depart,i_ID_Arrivee;
@@ -266,13 +265,15 @@ void Solution::Evaluation_Solution(Instance * instance)
             f_date=f_date+instance->get_distance_Hotel_Hotel(i_ID_depart, i_ID_Arrivee);
             if((f_date-v_Date_Depart[i])>instance->get_POI_Duree_Max_Voyage(i))
             {
-                // cout<< "Erreur : durée max du jour "<<i<<" dépassée puisqu'elle dure : "<< (f_date-v_Date_Depart[i])<<"." <<endl;
                 i_valeur_score_negatif += calculer_score_retard(instance->get_Duree_Max_Jour(), f_date-v_Date_Depart[i], instance->get_POI_Duree_Max_Voyage(i), 0, 30, 1, 5);
             }
         }
     }
 }
 
+/*
+ * Affiche une solution
+ */
 void Solution::print() {
    cout << "---------- Solution ----------" << endl;
    cout << "Hôtels intermédiaires : ";
@@ -295,10 +296,6 @@ unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet
     float retard = duree_actuelle_trajet - heure_limite;
     float retard_pourcentage = retard * 100 / heure_totale;
 
-    // cout << "heure_totale = " << heure_totale << endl;
-    // cout << "heure_limite = " << heure_limite << endl;
-    // cout << "duree_actuelle_trajet = " << duree_actuelle_trajet << endl;
-
     if (retard < 0)
     {
         cout << "ERREUR CALCUL RETARD, PAS DE RETARD" << endl;
@@ -306,20 +303,10 @@ unsigned int calculer_score_retard(int heure_totale, float duree_actuelle_trajet
     }
     else if (retard_pourcentage > fromB)
     {
-        // cout << "retard_pourcentage au dessus de " << fromB << ", on renvoi directement " << tob << endl << endl;
         return tob;
     }
     else
     {
-        // cout << "score de retard brut = " << (retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa << endl;
-        // cout << "score de retard ceiled = " << floor((retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa) << endl << endl;
         return floor((retard_pourcentage - fromA) * (tob - toa) / (fromB - fromA) + toa);
     }
-}
-
-void printPopulation(vector<Solution*> population) {
-   cout << "### Taille de la population : " << population.size() << endl;
-   for(unsigned int i=0; i<population.size(); i++) {
-      population[i]->print();
-   }
 }

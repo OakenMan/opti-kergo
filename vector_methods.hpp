@@ -6,6 +6,10 @@
 using namespace std;
 
 /*
+ * Fonctions utilisées pour manipuler plus facilement des vecteurs
+ */
+
+/*
  * Affiche un vecteur d'unsigned int sous cette forme : "[ x y z ] (n=taille) \n"
  */
 void printVector(vector<unsigned int> &v);
